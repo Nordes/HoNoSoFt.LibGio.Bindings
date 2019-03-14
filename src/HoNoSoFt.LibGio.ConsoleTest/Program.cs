@@ -11,8 +11,8 @@ namespace HoNoSoFt.LibGio.ConsoleTest
             Console.Write("Key to look: ");
             var gsettingsKey = Console.ReadLine();
 
-            var gsettings = HoNoSoFt.LibGio.Bindings.GSettings.New(gsettingsSchema);
-            var result = HoNoSoFt.LibGio.Bindings.GSettings.GetInt(gsettings, gsettingsKey);
+            var gsettings = Bindings.GSettings.New(gsettingsSchema);
+            var result = Bindings.GSettings.GetInt(gsettings, gsettingsKey);
             Console.WriteLine($"Value is: {result}");
             Console.ReadKey();
         }
