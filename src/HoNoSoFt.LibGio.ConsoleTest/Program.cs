@@ -7,12 +7,12 @@ namespace HoNoSoFt.LibGio.ConsoleTest
         static void Main(string[] args)
         {
             Console.Write("Schema to look: ");
-            var gsettingsSchema = Console.ReadLine();
+            var gSettingsSchema = Console.ReadLine();
             Console.Write("Key to look: ");
-            var gsettingsKey = Console.ReadLine();
+            var gSettingsKey = Console.ReadLine();
 
-            var gsettings = Bindings.GSettings.New(gsettingsSchema);
-            var result = Bindings.GSettings.GetInt(gsettings, gsettingsKey);
+            var gSettings = new Bindings.GSettings(gSettingsSchema);
+            var result = gSettings.GetInt(gSettingsKey);
             Console.WriteLine($"Value is: {result}");
             Console.ReadKey();
         }

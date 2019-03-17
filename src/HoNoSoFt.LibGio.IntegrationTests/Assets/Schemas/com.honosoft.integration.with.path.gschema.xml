@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<schemalist>
+  <enum id="com.honosoft.integration.with.path.enum">
+    <value nick="off" value="1"/>
+    <value nick="warming" value="2"/>
+    <value nick="on" value="3"/>
+  </enum>
+
+  <flags id="com.honosoft.integration.with.path.myflags">
+    <value nick="flag1" value="1"/>
+    <value nick="flag2" value="2"/>
+    <value nick="flag3" value="4"/>
+  </flags>
+
+  <schema path="%filepath%" id="com.honosoft.integration.with.path" gettext-domain="SampleApplication">
+
+    <key type="b" name="my-flag-is-active">
+      <default>true</default>
+      <summary>I am a boolean flag</summary>
+      <description>A description of your boolean</description>
+    </key>
+
+    <key type="i" name="test-int">
+      <range min="1" max="100"/>
+      <default>50</default>
+      <summary>Some test-integer</summary>
+      <description>Some test integer from 1 to 100 about something</description>
+    </key>
+
+    <key type="x" name="test-long">
+      <default>9223372036854775807</default>
+      <summary>Some max long value</summary>
+      <description>Some long value with default max value</description>
+    </key>
+
+    <key type="u" name="test-uint">
+      <default>4294967295</default>
+      <summary>Some max uint value</summary>
+      <description>Some uint value with default max value</description>
+    </key>
+
+    <key type="t" name="test-uint64">
+      <default>18446744073709551615</default>
+      <summary>Some max uint64 value</summary>
+      <description>Some uint64 value with default max value</description>
+    </key>
+
+    <key name="list-prime-numbers" type="ai">
+      <default>[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43]</default>
+      <summary>Some numbers</summary>
+      <description>
+        List of numbers
+      </description>
+    </key>
+
+    <key name="list-my-pets" type="as">
+      <default>['Captain', 'Scrooge', 'Mana', 'Saturn', 'Brutal']</default>
+      <summary>Some array of strings</summary>
+      <description>List my pet(s) name</description>
+    </key>
+
+    <key name="current-state" enum="com.honosoft.integration.with.path.enum">
+      <default>'off'</default>
+      <summary>display a state of my application</summary>
+      <description>Using the enum allow only a few values pre-defined</description>
+    </key>
+
+    <key name="test-flags" flags="com.honosoft.integration.with.path.myflags">
+      <default>['flag2', 'flag3']</default>
+      <summary>Play with flags</summary>
+      <description>Flags can have multiple state at the same time</description>
+    </key>
+
+    <!-- Use a structure of the book -->
+    <child name="best-book" schema="com.honosoft.integration.with.path.book"/>
+  </schema>
+
+  <schema path="%filepath%" id="com.honosoft.integration.with.path.book">
+    <key name="title" type="s">
+      <default>'Clean Code'</default>
+      <summary>Define the book title</summary>
+    </key>
+    <key name="author" type="s">
+      <default>'Robert C. Martin'</default>
+      <summary>Define the author name</summary>
+    </key>
+  </schema>
+</schemalist>
