@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using HoNoSoFt.LibGio.Bindings.Utilities;
 
@@ -164,10 +163,8 @@ namespace HoNoSoFt.LibGio.Bindings
         [Obsolete("Deprecated since Version 2.40")]
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_list_schemas")]
         public static extern string[] ListSchemas();
+       
         // Deprecated: g_settings_list_relocatable_schemas 
-
-
-
         // Deprecated: g_settings_get_range
 
         [Obsolete("Deprecated since Version 2.40")]
@@ -188,14 +185,20 @@ namespace HoNoSoFt.LibGio.Bindings
             return PInvokes.GSettings.SetInt(Settings, key, newValue);
         }
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_int64")]
-        public static extern bool SetInt64(IntPtr settings, string key, long value);
+        public bool SetInt64(string key, long newValue)
+        {
+            return PInvokes.GSettings.SetInt64(Settings, key, newValue);
+        }
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_uint")]
-        public static extern bool SetUInt(IntPtr settings, string key, uint value);
+        public bool SetUInt(string key, uint newValue)
+        {
+            return PInvokes.GSettings.SetUInt(Settings, key, newValue);
+        }
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_uint64")]
-        public static extern bool SetUInt64(IntPtr settings, string key, ulong value);
+        public bool SetUInt64(string key, ulong newValue)
+        {
+            return PInvokes.GSettings.SetUInt64(Settings, key, newValue);
+        }        
 
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_double")]
         public static extern double GetDouble(IntPtr settings, string key);

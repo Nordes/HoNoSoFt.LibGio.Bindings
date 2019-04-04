@@ -37,7 +37,12 @@ namespace HoNoSoFt.LibGio.Bindings.PInvokes
 
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_int")]
         public static extern bool SetInt(IntPtr settings, string key, int value);
-
+        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_int64")]
+        public static extern bool SetInt64(IntPtr settings, string key, long value);
+        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_uint")]
+        public static extern bool SetUInt(IntPtr settings, string key, uint value);
+        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_uint64")]
+        public static extern bool SetUInt64(IntPtr settings, string key, ulong value);
 
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_sync")]
         public static extern void Sync();

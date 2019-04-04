@@ -38,10 +38,10 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         }
 
         [Fact]
-        public void SetInt_ShouldReturnTheIntValue()
+        public void SetInt_ShouldSetNewValue()
         {
             // Prepare
-            var expectedValue = 22;
+            var expectedValue = -22;
             // Execute
             var result = _gSettings.SetInt("test-int", expectedValue);
             var resultUpdated = _gSettings.GetInt("test-int");
@@ -50,6 +50,51 @@ namespace HoNoSoFt.LibGio.IntegrationTests
             Assert.Equal(expectedValue, resultUpdated);
             // Reset the value to it's original state.
             _gSettings.Reset("test-int");
+        }
+
+        [Fact]
+        public void SetUInt_ShouldSetNewValue()
+        {
+            // Prepare
+            var expectedValue = 22;
+            // Execute
+            var result = _gSettings.SetInt("test-uint", expectedValue);
+            var resultUpdated = _gSettings.GetInt("test-uint");
+            // Assert
+            Assert.True(result);
+            Assert.Equal(expectedValue, resultUpdated);
+            // Reset the value to it's original state.
+            _gSettings.Reset("test-uint");
+        }
+
+        [Fact]
+        public void SetInt64_ShouldSetNewValue()
+        {
+            // Prepare
+            var expectedValue = 9223372036854775805;
+            // Execute
+            var result = _gSettings.SetInt64("test-long", expectedValue);
+            var resultUpdated = _gSettings.GetInt64("test-long");
+            // Assert
+            Assert.True(result);
+            Assert.Equal(expectedValue, resultUpdated);
+            // Reset the value to it's original state.
+            _gSettings.Reset("test-long");
+        }
+
+        [Fact]
+        public void SetUInt64_ShouldSetNewValue()
+        {
+            // Prepare
+            var expectedValue = 18446744073709551614;
+            // Execute
+            var result = _gSettings.SetUInt64("test-uint64", expectedValue);
+            var resultUpdated = _gSettings.GetUInt64("test-uint64");
+            // Assert
+            Assert.True(result);
+            Assert.Equal(expectedValue, resultUpdated);
+            // Reset the value to it's original state.
+            _gSettings.Reset("test-uint64");
         }
 
         [Fact]
