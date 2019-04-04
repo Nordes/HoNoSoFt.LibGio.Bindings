@@ -38,6 +38,21 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         }
 
         [Fact]
+        public void SetInt_ShouldReturnTheIntValue()
+        {
+            // Prepare
+            var expectedValue = 22;
+            // Execute
+            var result = _gSettings.SetInt("test-int", expectedValue);
+            var resultUpdated = _gSettings.GetInt("test-int");
+            // Assert
+            Assert.True(result);
+            Assert.Equal(expectedValue, resultUpdated);
+            // Reset the value to it's original state.
+            _gSettings.Reset("test-int");
+        }
+
+        [Fact]
         public void GetInt64_ShouldReturnTheIntValue()
         {
             // Execute
@@ -83,12 +98,17 @@ namespace HoNoSoFt.LibGio.IntegrationTests
             Assert.True(result.HasFlag(MyFlags.Flag3));
         }
 
-        //[Fact]
-        //public void ListChildren()
-        //{
-        //    var result = _gSettings.ListChildren();
-        //    Console.WriteLine(string.Join(", ", result));
-        //}
+        [Fact]
+        public void ListKeys()
+        {
+            // Prepare
+            var expected ="list-my-pets, test-uint, test-long, test-flags, current-state, my-flag-is-active, " +
+                          "test-int, test-uint64, list-prime-numbers";
+            //Execute
+            var result = _gSettings.ListKeys();
+            // Validate
+            Assert.Equal(expected, string.Join(", ", result));
+        }
 
         [Fact]
         public void GetValue_ShouldReturnsTheObjectValue()

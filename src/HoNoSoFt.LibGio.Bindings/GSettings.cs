@@ -1,96 +1,96 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
-using System.Text;
+using HoNoSoFt.LibGio.Bindings.Utilities;
 
 namespace HoNoSoFt.LibGio.Bindings
 {
+    // Start DBus manually: exec dbus-run-session -- bash
+    // Start the Tests: GSETTINGS_SCHEMA_DIR=~/schemas/ dbus-run-session dotnet test
+    // ref: https://dbus.freedesktop.org/doc/dbus-run-session.1.html
     public class GSettings
     {
         //// https://developer.gnome.org/gio/stable/GSettings.html#g-settings-get-int64
         // This should be disposed at some point... otherwise I suspect a memory leak.
         // Should be private.
-        internal IntPtr Settings { get; set; } 
+        internal IntPtr Settings { get; set; }
 
         public GSettings(string schema)
         {
-            Settings = New(schema);
+            Settings = PInvokes.GSettings.New(schema);
         }
 
         public GSettings(string schema, string path)
         {
-            Settings = New(schema, path);
+            Settings = PInvokes.GSettings.New(schema, path);
         }
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_new")]
-        private static extern IntPtr New(string schema);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_new_with_path")]
-        private static extern IntPtr New(string schema, string path);
 
         public bool GetBoolean(string key)
         {
-            return GetBoolean(Settings, key);
+            return PInvokes.GSettings.GetBoolean(Settings, key);
         }
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_boolean")]
-        private static extern bool GetBoolean(IntPtr settings, string key);
 
         public int GetInt(string key)
         {
-            return GetInt(Settings, key);
+            return PInvokes.GSettings.GetInt(Settings, key);
         }
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_int")]
-        private static extern int GetInt(IntPtr settings, string key);
 
         public long GetInt64(string key)
         {
-            return GetInt64(Settings, key);
+            return PInvokes.GSettings.GetInt64(Settings, key);
         }
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_int64")]
-        private static extern long GetInt64(IntPtr settings, string key);
 
         public uint GetUInt(string key)
         {
-            return GetUInt(Settings, key);
+            return PInvokes.GSettings.GetUInt(Settings, key);
         }
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_uint")]
-        private static extern uint GetUInt(IntPtr settings, string key);
 
         public ulong GetUInt64(string key)
         {
-            return GetUInt64(Settings, key);
+            return PInvokes.GSettings.GetUInt64(Settings, key);
         }
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_uint64")]
-        private static extern ulong GetUInt64(IntPtr settings, string key);
 
         public uint GetFlags(string key)
         {
-            return GetFlags(Settings, key);
+            return PInvokes.GSettings.GetFlags(Settings, key);
         }
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_flags")]
-        private static extern uint GetFlags(IntPtr settings, string key);
+        /// <summary>
+        /// Deprecated, don't use except in real need.
+        /// </summary>
+        /// <returns>List of keys in the schema</returns>
+        [Obsolete("Deprecated, don't use except in real need. This function is intended for introspection reasons.")]
+        public ICollection<string> ListKeys()
+        {
+            var originalPointer = PInvokes.GSettings.ListKeys(Settings);
+            var copyOriginalPointer = originalPointer;
+            var keys = MarshalUtility.MarshalStringArray(originalPointer);
 
-        //public string ListChildren()
-        //{
-        //    var a = ListChildren(Settings);
-        //    Console.WriteLine(a.Length);
-        //    return "abc";
-        //}
+            // You should free the return value with g_strfreev() when you are done with it.
+            StringUtilityFunction.GStrFreeV(copyOriginalPointer);
 
-        //[DllImport("libgio-2.0.so", EntryPoint = "g_settings_list_children", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-        //private static extern String[] ListChildren(IntPtr settings); // Does not work
+            return keys;
+        }
+
+        /// <summary>
+        /// There is little reason to call this function from "normal" code, since you should already know what
+        /// children are in your schema.
+        /// </summary>
+        /// <returns></returns>
+        public ICollection<string> ListChildren()
+        {
+            var originalPointer = PInvokes.GSettings.ListChildren(Settings);
+            var copyOriginalPointer = originalPointer;
+            var children = MarshalUtility.MarshalStringArray(originalPointer);
+
+            // You should free the return value with g_strfreev() when you are done with it.
+            StringUtilityFunction.GStrFreeV(copyOriginalPointer);
+
+            return children;
+        }
 
         // Should be using some kind of pattern regarding the value.
-
-
         // All API's defined by using command: `nm -D libgio-2.0.so`
         // https://developer.gnome.org/gio/stable/GSettings.html#g-settings-set-int64
         // https://developer.gnome.org/glib/stable/glib-Basic-Types.html#gint
@@ -100,8 +100,10 @@ namespace HoNoSoFt.LibGio.Bindings
         // Not implemented: g_settings_new_with_backend_and_path
         // Not implemented: g_settings_new_full 
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_sync")]
-        public static extern void Sync();
+        public void Sync()
+        {
+            PInvokes.GSettings.Sync();
+        }
 
         /// <summary>
         /// Get the value.
@@ -123,7 +125,7 @@ namespace HoNoSoFt.LibGio.Bindings
         public static extern IntPtr GetValue(IntPtr settings, string key);
 
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_value")]
-        public static extern bool SetValue(IntPtr settings, string key, object value);
+        public static extern bool SetValue(IntPtr settings, string key, IntPtr value);
 
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_is_writable")]
         public static extern bool IsWritable(IntPtr settings, string key);
@@ -148,8 +150,10 @@ namespace HoNoSoFt.LibGio.Bindings
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_child")]
         public static extern IntPtr GetChild(IntPtr settings, string childSchemaName);
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_reset")]
-        public static extern void Reset(IntPtr settings, string key);
+        public void Reset(string settingKey)
+        {
+            PInvokes.GSettings.Reset(Settings, settingKey);
+        }
 
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_user_value")]
         public static extern object GetUserValue(IntPtr settings, string key);
@@ -161,7 +165,6 @@ namespace HoNoSoFt.LibGio.Bindings
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_list_schemas")]
         public static extern string[] ListSchemas();
         // Deprecated: g_settings_list_relocatable_schemas 
-        // Deprecated: g_settings_list_keys 
 
 
 
@@ -180,8 +183,10 @@ namespace HoNoSoFt.LibGio.Bindings
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_boolean")]
         public static extern bool SetBoolean(IntPtr settings, string key, bool value);
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_int")]
-        public static extern bool SetInt(IntPtr settings, string key, int value);
+        public bool SetInt(string key, int newValue)
+        {
+            return PInvokes.GSettings.SetInt(Settings, key, newValue);
+        }
 
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_int64")]
         public static extern bool SetInt64(IntPtr settings, string key, long value);
