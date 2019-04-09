@@ -6,8 +6,17 @@ namespace HoNoSoFt.LibGio.Bindings
     /// <summary>
     /// https://developer.gnome.org/glib/stable/glib-GVariant.html
     /// </summary>
-    public static class GVariant
+    public class GVariant
     {
+        internal IntPtr ValuePtr { get; private set; }
+
+        internal GVariant(IntPtr gVariant)
+        {
+            ValuePtr = gVariant;
+        }
+
+        // Todo: Add a constructor... many...
+
         /// <summary>
         /// https://developer.gnome.org/glib/stable/glib-GVariant.html#g-variant-unref
         /// </summary>

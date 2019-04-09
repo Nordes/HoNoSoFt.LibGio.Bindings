@@ -158,7 +158,8 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         [Fact]
         public void GetValue_ShouldReturnsTheObjectValue()
         {
-            var gVariantValue = GSettings.GetValue(_schema, "list-prime-numbers");
+            throw new NotImplementedException("Not fully implemented, see GSettings.GetValue");
+            var gVariantValue = Bindings.PInvokes.GSettings.GetValue(_schema, "list-prime-numbers");
             Assert.NotEqual(IntPtr.Zero, gVariantValue);
         }
     }

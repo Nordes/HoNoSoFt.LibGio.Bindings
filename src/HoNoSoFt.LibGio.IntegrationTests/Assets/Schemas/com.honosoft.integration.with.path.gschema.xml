@@ -34,6 +34,12 @@
       <description>Some long value with default max value</description>
     </key>
 
+    <key type="d" name="test-double">
+      <default>12.34</default>
+      <summary>Some double value</summary>
+      <description>Some double value with default</description>
+    </key>
+
     <key type="u" name="test-uint">
       <default>4294967295</default>
       <summary>Some max uint value</summary>

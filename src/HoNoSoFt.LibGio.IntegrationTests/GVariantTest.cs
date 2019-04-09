@@ -29,10 +29,10 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void GetType_ShouldReturnsTheObjectType(string key, string gVariantTypeString)
         {
             // Prepare
-            var gVariantValue = GSettings.GetValue(_schema, key);
+            var gVariantValue = Bindings.PInvokes.GSettings.GetValue(_schema, key);
             // Execute
             var variantType = GVariant.GetType(gVariantValue);
-            var typeAsString = GVariantType.TypePeekString(variantType);
+            var typeAsString = Bindings.PInvokes.GVariantType.TypePeekString(variantType);
             // Verify
             Assert.Equal(gVariantTypeString, typeAsString);
         }
@@ -50,7 +50,7 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void GetTypeString_ShouldReturnsTheObjectType(string key, string gVariantTypeString)
         {
             // Prepare
-            var gVariantValue = GSettings.GetValue(_schema, key);
+            var gVariantValue = Bindings.PInvokes.GSettings.GetValue(_schema, key);
             // Execute
             var typeAsStringPtr = GVariant.GetTypeString(gVariantValue);
             var typeAsString = Marshal.PtrToStringAnsi(typeAsStringPtr);
@@ -70,8 +70,8 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void IsOfType_ShouldLookForEqualTypeSuccessfully(string key, string expectedType)
         {
             // Prepare
-            var gVariantTypeIntPtr = GVariantType.New(expectedType);
-            var gVariantValue = GSettings.GetValue(_schema, key);
+            var gVariantTypeIntPtr = Bindings.PInvokes.GVariantType.New(expectedType);
+            var gVariantValue = Bindings.PInvokes.GSettings.GetValue(_schema, key);
             // Execute
             var result = GVariant.IsOfType(gVariantValue, gVariantTypeIntPtr);
             // Verify
@@ -84,7 +84,7 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void IsContainer_ShouldReturnsTrueIfContainer(string key)
         {
             // Prepare
-            var gVariantValue = GSettings.GetValue(_schema, key);
+            var gVariantValue = Bindings.PInvokes.GSettings.GetValue(_schema, key);
             // Execute
             var result = GVariant.IsContainer(gVariantValue);
             // Assert
@@ -101,7 +101,7 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void IsContainer_ShouldReturnsFalseIfNotContainer(string key)
         {
             // Prepare
-            var gVariantValue = GSettings.GetValue(_schema, key);
+            var gVariantValue = Bindings.PInvokes.GSettings.GetValue(_schema, key);
             // Execute
             var result = GVariant.IsContainer(gVariantValue);
             // Assert
@@ -119,7 +119,7 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void Classify_ShouldSucceed(string key, string mainClassName)
         {
             // Prepare
-            var gVariantValue = GSettings.GetValue(_schema, key);
+            var gVariantValue = Bindings.PInvokes.GSettings.GetValue(_schema, key);
             var result = GVariant.Classify(gVariantValue);
             // Verify
             Assert.Equal(mainClassName, result.ToString());
@@ -137,7 +137,7 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void Print_ShouldRetrieveTheDataTypeAnnotateWithSuccess(string key, string prettyPrint)
         {
             // Prepare
-            var gVariantValue = GSettings.GetValue(_schema, key);
+            var gVariantValue = Bindings.PInvokes.GSettings.GetValue(_schema, key);
             // Execute
             var content = GVariant.Print(gVariantValue, true);
             // Verify
@@ -156,7 +156,7 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void Print_ShouldRetrieveTheDataNoTypeAnnotateWithSuccess(string key, string prettyPrint)
         {
             // Prepare
-            var gVariantValue = GSettings.GetValue(_schema, key);
+            var gVariantValue = Bindings.PInvokes.GSettings.GetValue(_schema, key);
             // Execute
             var content = GVariant.Print(gVariantValue, false);
             // Verify

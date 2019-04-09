@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using HoNoSoFt.LibGio.Bindings.Utilities;
 
@@ -8,6 +9,11 @@ namespace HoNoSoFt.LibGio.Bindings
     // Start DBus manually: exec dbus-run-session -- bash
     // Start the Tests: GSETTINGS_SCHEMA_DIR=~/schemas/ dbus-run-session dotnet test
     // ref: https://dbus.freedesktop.org/doc/dbus-run-session.1.html
+    // Should be using some kind of pattern regarding the value.
+    // All API's defined by using command: `nm -D libgio-2.0.so`
+    // https://developer.gnome.org/gio/stable/GSettings.html#g-settings-set-int64
+    // https://developer.gnome.org/glib/stable/glib-Basic-Types.html#gint
+    // Some example: https://lzone.de/examples/Glib
     public class GSettings
     {
         //// https://developer.gnome.org/gio/stable/GSettings.html#g-settings-get-int64
@@ -25,34 +31,104 @@ namespace HoNoSoFt.LibGio.Bindings
             Settings = PInvokes.GSettings.New(schema, path);
         }
 
-        public bool GetBoolean(string key)
+        // Not implemented: g_settings_new_with_backend
+        // Not implemented: g_settings_new_with_backend_and_path
+        // Not implemented: g_settings_new_full 
+
+        internal GSettings(IntPtr rawGSettings)
         {
-            return PInvokes.GSettings.GetBoolean(Settings, key);
+            Settings = rawGSettings;
         }
 
-        public int GetInt(string key)
+        /// <summary>
+        /// https://developer.gnome.org/gio/stable/GSettings.html#g-settings-sync
+        /// </summary>
+        public void Sync()
         {
-            return PInvokes.GSettings.GetInt(Settings, key);
+            PInvokes.GSettings.Sync();
         }
 
-        public long GetInt64(string key)
+        /// <summary>
+        /// Get the value.
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <param name="key"></param>
+        /// <returns>A GVariant</returns>
+        /// <remarks>
+        /// https://developer.gnome.org/glib/stable/glib-GVariant.html#GVariant
+        /// https://developer.gnome.org/glib/stable/glib-GVariantType.html GVariant type...
+        /// https://developer.gnome.org/gobject/stable/gobject-Enumeration-and-Flag-Types.html
+        /// https://blog.spyzone.fr/2011/05/ecouter-les-messages-dbus-via-gio/
+        ///
+        /// https://stackoverflow.com/questions/17379492/marshal-c-struct-to-c-sharp
+        /// https://people.gnome.org/~desrt/glib-docs/glib-GVariant.html
+        /// https://github.com/GNOME/glib/blob/master/glib/gvariant.c
+        /// </remarks>
+        public string GetValue(string key)
         {
-            return PInvokes.GSettings.GetInt64(Settings, key);
+            var gVariantValue = PInvokes.GSettings.GetValue(Settings, key);
+            var variantTypeStr = GVariant.GetType(gVariantValue);
+            var gvariantType = new GVariantType(variantTypeStr);
+            var typeAsString = gvariantType.TypePeekString(); // useless.
+            // TypePeekString : Should be used with g_variant_type_get_string_length
+
+            // depending on the string, we should then try to return the value
+            throw new NotImplementedException("Missing the value (Can be completed after GVariant full implementation.");
+            return typeAsString;
         }
 
-        public uint GetUInt(string key)
+        public bool SetValue(string key, GVariant value)
         {
-            return PInvokes.GSettings.GetUInt(Settings, key);
+            throw new NotImplementedException("Not implemented, not tested");
+            return PInvokes.GSettings.SetValue(Settings, key, value.ValuePtr);
         }
 
-        public ulong GetUInt64(string key)
+        public bool IsWritable(string key)
         {
-            return PInvokes.GSettings.GetUInt64(Settings, key);
+            // TODO write TESTS
+            return PInvokes.GSettings.IsWritable(Settings, key);
         }
 
-        public uint GetFlags(string key)
+        /// <summary>
+        /// https://developer.gnome.org/gio/stable/GSettings.html#g-settings-delay
+        /// Combination with Apply() to create "transactions" and Revert() to "rollback"
+        /// </summary>
+        public void Delay() => PInvokes.GSettings.Delay(Settings);
+        public void Apply() => PInvokes.GSettings.Apply(Settings);
+        public void Revert() => PInvokes.GSettings.Revert(Settings);
+        public bool HasUnApplied() => PInvokes.GSettings.HasUnApplied(Settings);
+
+        public GSettings GetChild(string childSchemaName)
         {
-            return PInvokes.GSettings.GetFlags(Settings, key);
+            var childSettings = PInvokes.GSettings.GetChild(Settings, childSchemaName);
+
+            return new GSettings(childSettings);
+        }
+
+        public void Reset(string key) => PInvokes.GSettings.Reset(Settings, key);
+
+        public object GetUserValue(string key)
+        {
+            throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
+            PInvokes.GSettings.GetUserValue(Settings, key);
+        }
+
+        public object GetDefaultValue(string key)
+        {
+            throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
+            PInvokes.GSettings.GetDefaultValue(Settings, key);
+        }
+
+        [Obsolete("Deprecated since Version 2.40, Use SchemaSourceListSchemas() or SchemaSourceLookup() instead")]
+        public string[] ListSchemas()
+        {
+            return PInvokes.GSettings.ListSchemas();
+        }
+        
+        [Obsolete("Deprecated since Version 2.40, Use SchemaSourceListSchemas() instead")]
+        public string[] ListRelocatableSchemas()
+        {
+            return PInvokes.GSettings.ListRelocatableSchemas();
         }
 
         /// <summary>
@@ -76,7 +152,7 @@ namespace HoNoSoFt.LibGio.Bindings
         /// There is little reason to call this function from "normal" code, since you should already know what
         /// children are in your schema.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Collection of children.</returns>
         public ICollection<string> ListChildren()
         {
             var originalPointer = PInvokes.GSettings.ListChildren(Settings);
@@ -89,147 +165,65 @@ namespace HoNoSoFt.LibGio.Bindings
             return children;
         }
 
-        // Should be using some kind of pattern regarding the value.
-        // All API's defined by using command: `nm -D libgio-2.0.so`
-        // https://developer.gnome.org/gio/stable/GSettings.html#g-settings-set-int64
-        // https://developer.gnome.org/glib/stable/glib-Basic-Types.html#gint
-        // Some example: https://lzone.de/examples/Glib
-
-        // Not implemented: g_settings_new_with_backend
-        // Not implemented: g_settings_new_with_backend_and_path
-        // Not implemented: g_settings_new_full 
-
-        public void Sync()
+        [Obsolete("Deprecated since Version 2.40, Use SchemaKeyGetRange instead")]
+        public object GetRange(string key)
         {
-            PInvokes.GSettings.Sync();
+            throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
+            var gVariant = PInvokes.GSettings.GetRange(Settings, key);
         }
 
-        /// <summary>
-        /// Get the value.
-        /// </summary>
-        /// <param name="settings"></param>
-        /// <param name="key"></param>
-        /// <returns>A GVariant</returns>
-        /// <remarks>
-        /// https://developer.gnome.org/glib/stable/glib-GVariant.html#GVariant
-        /// https://developer.gnome.org/glib/stable/glib-GVariantType.html GVariant type...
-        /// https://developer.gnome.org/gobject/stable/gobject-Enumeration-and-Flag-Types.html
-        /// https://blog.spyzone.fr/2011/05/ecouter-les-messages-dbus-via-gio/
-        ///
-        /// https://stackoverflow.com/questions/17379492/marshal-c-struct-to-c-sharp
-        /// https://people.gnome.org/~desrt/glib-docs/glib-GVariant.html
-        /// https://github.com/GNOME/glib/blob/master/glib/gvariant.c
-        /// </remarks>
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_value")]
-        public static extern IntPtr GetValue(IntPtr settings, string key);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_value")]
-        public static extern bool SetValue(IntPtr settings, string key, IntPtr value);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_is_writable")]
-        public static extern bool IsWritable(IntPtr settings, string key);
-
-        /// <summary>
-        /// https://developer.gnome.org/gio/stable/GSettings.html#g-settings-delay
-        /// Combination with Apply() to create "transactions" and Revert() to "rollback"
-        /// </summary>
-        /// <param name="settings"></param>
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_delay")]
-        public static extern void Delay(IntPtr settings);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_apply")]
-        public static extern void Apply(IntPtr settings);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_revert")]
-        public static extern void Revert(IntPtr settings);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_has_unapplied")]
-        public static extern bool UnApplied(IntPtr settings);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_child")]
-        public static extern IntPtr GetChild(IntPtr settings, string childSchemaName);
-
-        public void Reset(string settingKey)
+        [Obsolete("Deprecated since Version 2.40, Use SchemaKeyRangeCheck instead")]
+        public bool RangeCheck(string key, object value)
         {
-            PInvokes.GSettings.Reset(Settings, settingKey);
+            // value is a GVariant
+            throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
+            return PInvokes.GSettings.RangeCheck(Settings, key, value);
         }
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_user_value")]
-        public static extern object GetUserValue(IntPtr settings, string key);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_default_value")]
-        public static extern object GetDefaultValue(IntPtr settings, string key);
-
-        [Obsolete("Deprecated since Version 2.40")]
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_list_schemas")]
-        public static extern string[] ListSchemas();
-       
-        // Deprecated: g_settings_list_relocatable_schemas 
-        // Deprecated: g_settings_get_range
-
-        [Obsolete("Deprecated since Version 2.40")]
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_range_check")]
-        public static extern bool RangeCheck(IntPtr settings, string key, object value);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get")]
-        public static extern void Get(IntPtr settings, string key, string format, params object[] value);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set")]
-        public static extern void Set(IntPtr settings, string key, string format, params object[] value);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_boolean")]
-        public static extern bool SetBoolean(IntPtr settings, string key, bool value);
-
-        public bool SetInt(string key, int newValue)
+        public void Get(string key, string format, params object[] formatArgs)
         {
-            return PInvokes.GSettings.SetInt(Settings, key, newValue);
+            throw new NotImplementedException("Not implemented.");
+            PInvokes.GSettings.Get(Settings, key, format, formatArgs);
         }
 
-        public bool SetInt64(string key, long newValue)
+        public void Set(string key, string format, params object[] formatArgs)
         {
-            return PInvokes.GSettings.SetInt64(Settings, key, newValue);
+            throw new NotImplementedException("Not implemented.");
+            PInvokes.GSettings.Get(Settings, key, format, formatArgs);
         }
 
-        public bool SetUInt(string key, uint newValue)
+        public bool GetBoolean(string key) => PInvokes.GSettings.GetBoolean(Settings, key);
+        public bool SetBoolean(string key, bool value) => PInvokes.GSettings.SetBoolean(Settings, key, value);
+        public int GetInt(string key) => PInvokes.GSettings.GetInt(Settings, key);
+        public bool SetInt(string key, int newValue) => PInvokes.GSettings.SetInt(Settings, key, newValue);
+        public long GetInt64(string key) => PInvokes.GSettings.GetInt64(Settings, key);
+        public bool SetInt64(string key, long newValue) => PInvokes.GSettings.SetInt64(Settings, key, newValue);
+        public uint GetUInt(string key) => PInvokes.GSettings.GetUInt(Settings, key);
+        public bool SetUInt(string key, uint newValue) => PInvokes.GSettings.SetUInt(Settings, key, newValue);
+        public ulong GetUInt64(string key) => PInvokes.GSettings.GetUInt64(Settings, key);
+        public bool SetUInt64(string key, ulong newValue) => PInvokes.GSettings.SetUInt64(Settings, key, newValue);
+        public double GetDouble(string key) => PInvokes.GSettings.GetDouble(Settings, key);
+        public bool SetDouble(string key, double value) => PInvokes.GSettings.SetDouble(Settings, key, value);
+        public string GetString(string key) => PInvokes.GSettings.GetString(Settings, key);
+        public bool SetString(string key, string value) => PInvokes.GSettings.SetString(Settings, key, value);
+
+        public ICollection<string> GetStringV(string key)
         {
-            return PInvokes.GSettings.SetUInt(Settings, key, newValue);
+            var originalPointer = PInvokes.GSettings.GetStrv(Settings, key);
+            var children = MarshalUtility.MarshalStringArray(originalPointer);
+
+            return children;
         }
 
-        public bool SetUInt64(string key, ulong newValue)
-        {
-            return PInvokes.GSettings.SetUInt64(Settings, key, newValue);
-        }        
+        public bool SetStringV(string key, ICollection<string> value) => PInvokes.GSettings.SetStrv(Settings, key, value.ToArray());
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_double")]
-        public static extern double GetDouble(IntPtr settings, string key);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_double")]
-        public static extern bool SetDouble(IntPtr settings, string key, double value);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_string")]
-        public static extern string GetString(IntPtr settings, string key);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_string")]
-        public static extern bool SetString(IntPtr settings, string key, string value);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_strv")]
-        public static extern string[] GetStrv(IntPtr settings, string key);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_strv")]
-        public static extern bool SetStrv(IntPtr settings, string key, string[] values);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_enum")]
-        public static extern int GetEnum(IntPtr settings, string key);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_enum")]
-        public static extern bool SetEnum(IntPtr settings, string key, int value);
-
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_set_flags")]
-        public static extern bool SetFlags(IntPtr settings, string key, uint value);
+        public int GetEnum(string key) => PInvokes.GSettings.GetEnum(Settings, key);
+        public bool SetEnum(string key, int value) => PInvokes.GSettings.SetEnum(Settings, key, value);
+        public uint GetFlags(string key) => PInvokes.GSettings.GetFlags(Settings, key);
+        public bool SetFlags(string key, uint value) => PInvokes.GSettings.SetFlags(Settings, key, value);
 
         //[DllImport("libgio-2.0.so", EntryPoint = "GSettingsGetMapping")]
         //public static extern unsafe bool GetMapping(object value, void* result, void* userData);
-
         //[DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_mapped")]
         //public static extern unsafe void* GetMapped(uint settings, string key, gSettingMapping mapping, void* userData);
 
@@ -239,6 +233,12 @@ namespace HoNoSoFt.LibGio.Bindings
         // g_settings_unbind
         // GSettingsBindSetMapping
         // GSettingsBindGetMapping
-        // g_settings_create_action
+
+        public GAction CreateAction(string key)
+        {
+            var gActionPtr = PInvokes.GSettings.CreateAction(Settings, key);
+
+            return new GAction(gActionPtr);
+        }
     }
 }

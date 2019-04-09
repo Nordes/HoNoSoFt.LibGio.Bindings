@@ -28,10 +28,10 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void GetStringLength_ShouldReturnTheTypeLength(string key, int length)
         {
             // Prepare
-            var gVariantValue = GSettings.GetValue(_schema, key);
+            var gVariantValue = Bindings.PInvokes.GSettings.GetValue(_schema, key);
             var variantType = GVariant.GetType(gVariantValue);
             // Execute
-            var bufferSize = GVariantType.GetStringLength(variantType);
+            var bufferSize = Bindings.PInvokes.GVariantType.GetStringLength(variantType);
             // Verify
             Assert.Equal(length, bufferSize);
         }
@@ -42,7 +42,7 @@ namespace HoNoSoFt.LibGio.IntegrationTests
             // Prepare
             string typeString = "ai";
             // Execute
-            var gVariantTypeIntPtr = GVariantType.New(typeString);
+            var gVariantTypeIntPtr = Bindings.PInvokes.GVariantType.New(typeString);
             // Verify
             Assert.True(gVariantTypeIntPtr.ToInt64() > 0);
         }
