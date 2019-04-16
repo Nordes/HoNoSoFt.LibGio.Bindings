@@ -33,9 +33,9 @@ namespace HoNoSoFt.LibGio.Bindings.PInvokes
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_reset")]
         public static extern void Reset(IntPtr settings, string key);
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_user_value")]
-        public static extern object GetUserValue(IntPtr settings, string key);
+        public static extern IntPtr GetUserValue(IntPtr settings, string key);
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_default_value")]
-        public static extern object GetDefaultValue(IntPtr settings, string key);
+        public static extern IntPtr GetDefaultValue(IntPtr settings, string key);
 
         [Obsolete("Deprecated since Version 2.40, Use g_settings_schema_source_list_schemas() or g_settings_schema_source_lookup()")]
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_list_schemas")]
@@ -57,7 +57,7 @@ namespace HoNoSoFt.LibGio.Bindings.PInvokes
         public static extern IntPtr GetRange(IntPtr settings, string key);
         [Obsolete("Deprecated since Version 2.40, Use g_settings_schema_key_range_check() instead")]
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_range_check")]
-        public static extern bool RangeCheck(IntPtr settings, string key, object value);
+        public static extern bool RangeCheck(IntPtr settings, string key, IntPtr value);
 
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_get")]
         public static extern void Get(IntPtr settings, string key, string format, params object[] value);

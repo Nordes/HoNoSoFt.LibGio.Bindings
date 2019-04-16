@@ -13,7 +13,7 @@ namespace HoNoSoFt.LibGio.IntegrationTests
 
         public GVariantTypeTest(GSchemaFixture schemaFix)
         {
-            _schema = new GSettings(schemaFix.SchemaName).Settings;
+            _schema = new GSettings(schemaFix.SchemaName).GSettingsPtr;
         }
 
         [Theory]
@@ -29,7 +29,7 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         {
             // Prepare
             var gVariantValue = Bindings.PInvokes.GSettings.GetValue(_schema, key);
-            var variantType = GVariant.GetType(gVariantValue);
+            var variantType = Bindings.PInvokes.GVariant.GetType(gVariantValue);
             // Execute
             var bufferSize = Bindings.PInvokes.GVariantType.GetStringLength(variantType);
             // Verify

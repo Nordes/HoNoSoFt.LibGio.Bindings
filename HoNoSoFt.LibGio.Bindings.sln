@@ -5,11 +5,13 @@ VisualStudioVersion = 16.0.28705.295
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HoNoSoFt.LibGio.Bindings", "src\HoNoSoFt.LibGio.Bindings\HoNoSoFt.LibGio.Bindings.csproj", "{886C46FF-53A4-4285-8774-A69EFCDFB9F8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HoNoSoFt.LibGio.ConsoleTest", "src\HoNoSoFt.LibGio.ConsoleTest\HoNoSoFt.LibGio.ConsoleTest.csproj", "{8E37D684-2A9B-4C23-9161-9B3D8FEF6041}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HoNoSoFt.LibGio.SampleBasic", "src\HoNoSoFt.LibGio.ConsoleTest\HoNoSoFt.LibGio.SampleBasic.csproj", "{8E37D684-2A9B-4C23-9161-9B3D8FEF6041}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{9521D37D-677A-4EAB-A3D4-CC5EFDE14ADE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9521D37D-677A-4EAB-A3D4-CC5EFDE14ADE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HoNoSoFt.LibGio.IntegrationTests", "src\HoNoSoFt.LibGio.IntegrationTests\HoNoSoFt.LibGio.IntegrationTests.csproj", "{9B4AF60D-20A9-4313-90C9-70BE2E32CF8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HoNoSoFt.LibGio.IntegrationTests", "src\HoNoSoFt.LibGio.IntegrationTests\HoNoSoFt.LibGio.IntegrationTests.csproj", "{9B4AF60D-20A9-4313-90C9-70BE2E32CF8D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{C4870EC3-9DD5-48C8-A120-E7730C164DD0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,10 +63,11 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8E37D684-2A9B-4C23-9161-9B3D8FEF6041} = {C4870EC3-9DD5-48C8-A120-E7730C164DD0}
+		{9B4AF60D-20A9-4313-90C9-70BE2E32CF8D} = {9521D37D-677A-4EAB-A3D4-CC5EFDE14ADE}
+	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E9C306A0-85BF-4931-83B7-E5136670AB0F}
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{9B4AF60D-20A9-4313-90C9-70BE2E32CF8D} = {9521D37D-677A-4EAB-A3D4-CC5EFDE14ADE}
 	EndGlobalSection
 EndGlobal

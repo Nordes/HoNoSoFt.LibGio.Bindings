@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using HoNoSoFt.LibGio.Bindings.Utilities;
 
 namespace HoNoSoFt.LibGio.Bindings
@@ -19,34 +18,19 @@ namespace HoNoSoFt.LibGio.Bindings
         //// https://developer.gnome.org/gio/stable/GSettings.html#g-settings-get-int64
         // This should be disposed at some point... otherwise I suspect a memory leak.
         // Should be private.
-        internal IntPtr Settings { get; set; }
+        internal IntPtr GSettingsPtr { get; set; }
 
-        public GSettings(string schema)
-        {
-            Settings = PInvokes.GSettings.New(schema);
-        }
-
-        public GSettings(string schema, string path)
-        {
-            Settings = PInvokes.GSettings.New(schema, path);
-        }
-
+        internal GSettings(IntPtr rawGSettings) => GSettingsPtr = rawGSettings;
+        public GSettings(string schema) => GSettingsPtr = PInvokes.GSettings.New(schema);
+        public GSettings(string schema, string path) => GSettingsPtr = PInvokes.GSettings.New(schema, path);
         // Not implemented: g_settings_new_with_backend
         // Not implemented: g_settings_new_with_backend_and_path
         // Not implemented: g_settings_new_full 
 
-        internal GSettings(IntPtr rawGSettings)
-        {
-            Settings = rawGSettings;
-        }
-
         /// <summary>
         /// https://developer.gnome.org/gio/stable/GSettings.html#g-settings-sync
         /// </summary>
-        public void Sync()
-        {
-            PInvokes.GSettings.Sync();
-        }
+        public static void Sync() => PInvokes.GSettings.Sync();
 
         /// <summary>
         /// Get the value.
@@ -66,8 +50,8 @@ namespace HoNoSoFt.LibGio.Bindings
         /// </remarks>
         public string GetValue(string key)
         {
-            var gVariantValue = PInvokes.GSettings.GetValue(Settings, key);
-            var variantTypeStr = GVariant.GetType(gVariantValue);
+            var gVariantValue = PInvokes.GSettings.GetValue(GSettingsPtr, key);
+            var variantTypeStr = PInvokes.GVariant.GetType(gVariantValue);
             var gvariantType = new GVariantType(variantTypeStr);
             var typeAsString = gvariantType.TypePeekString(); // useless.
             // TypePeekString : Should be used with g_variant_type_get_string_length
@@ -77,57 +61,40 @@ namespace HoNoSoFt.LibGio.Bindings
             return typeAsString;
         }
 
-        public bool SetValue(string key, GVariant value)
-        {
-            throw new NotImplementedException("Not implemented, not tested");
-            return PInvokes.GSettings.SetValue(Settings, key, value.ValuePtr);
-        }
-
-        public bool IsWritable(string key)
-        {
-            // TODO write TESTS
-            return PInvokes.GSettings.IsWritable(Settings, key);
-        }
+        public bool SetValue(string key, GVariant value) => PInvokes.GSettings.SetValue(GSettingsPtr, key, value.GVariantPtr);
+        public bool IsWritable(string key) => PInvokes.GSettings.IsWritable(GSettingsPtr, key);
 
         /// <summary>
         /// https://developer.gnome.org/gio/stable/GSettings.html#g-settings-delay
         /// Combination with Apply() to create "transactions" and Revert() to "rollback"
         /// </summary>
-        public void Delay() => PInvokes.GSettings.Delay(Settings);
-        public void Apply() => PInvokes.GSettings.Apply(Settings);
-        public void Revert() => PInvokes.GSettings.Revert(Settings);
-        public bool HasUnApplied() => PInvokes.GSettings.HasUnApplied(Settings);
+        public void Delay() => PInvokes.GSettings.Delay(GSettingsPtr);
+        public void Apply() => PInvokes.GSettings.Apply(GSettingsPtr);
+        public void Revert() => PInvokes.GSettings.Revert(GSettingsPtr);
+        public bool HasUnApplied() => PInvokes.GSettings.HasUnApplied(GSettingsPtr);
 
         public GSettings GetChild(string childSchemaName)
         {
-            var childSettings = PInvokes.GSettings.GetChild(Settings, childSchemaName);
+            var childSettings = PInvokes.GSettings.GetChild(GSettingsPtr, childSchemaName);
 
             return new GSettings(childSettings);
         }
 
-        public void Reset(string key) => PInvokes.GSettings.Reset(Settings, key);
-
-        public object GetUserValue(string key)
-        {
-            throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
-            PInvokes.GSettings.GetUserValue(Settings, key);
-        }
-
-        public object GetDefaultValue(string key)
-        {
-            throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
-            PInvokes.GSettings.GetDefaultValue(Settings, key);
-        }
+        public void Reset(string key) => PInvokes.GSettings.Reset(GSettingsPtr, key);
+        public GVariant GetUserValue(string key) => new GVariant(PInvokes.GSettings.GetUserValue(GSettingsPtr, key));
+        public GVariant GetDefaultValue(string key) => new GVariant(PInvokes.GSettings.GetDefaultValue(GSettingsPtr, key));
 
         [Obsolete("Deprecated since Version 2.40, Use SchemaSourceListSchemas() or SchemaSourceLookup() instead")]
         public string[] ListSchemas()
         {
+            // TODO Code is wrong... should return a IntPtr
             return PInvokes.GSettings.ListSchemas();
         }
         
         [Obsolete("Deprecated since Version 2.40, Use SchemaSourceListSchemas() instead")]
         public string[] ListRelocatableSchemas()
         {
+            // TODO Code is wrong... should return a IntPtr
             return PInvokes.GSettings.ListRelocatableSchemas();
         }
 
@@ -138,7 +105,7 @@ namespace HoNoSoFt.LibGio.Bindings
         [Obsolete("Deprecated, don't use except in real need. This function is intended for introspection reasons.")]
         public ICollection<string> ListKeys()
         {
-            var originalPointer = PInvokes.GSettings.ListKeys(Settings);
+            var originalPointer = PInvokes.GSettings.ListKeys(GSettingsPtr);
             var copyOriginalPointer = originalPointer;
             var keys = MarshalUtility.MarshalStringArray(originalPointer);
 
@@ -155,7 +122,7 @@ namespace HoNoSoFt.LibGio.Bindings
         /// <returns>Collection of children.</returns>
         public ICollection<string> ListChildren()
         {
-            var originalPointer = PInvokes.GSettings.ListChildren(Settings);
+            var originalPointer = PInvokes.GSettings.ListChildren(GSettingsPtr);
             var copyOriginalPointer = originalPointer;
             var children = MarshalUtility.MarshalStringArray(originalPointer);
 
@@ -166,77 +133,55 @@ namespace HoNoSoFt.LibGio.Bindings
         }
 
         [Obsolete("Deprecated since Version 2.40, Use SchemaKeyGetRange instead")]
-        public object GetRange(string key)
-        {
-            throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
-            var gVariant = PInvokes.GSettings.GetRange(Settings, key);
-        }
-
+        public GVariant GetRange(string key) => new GVariant(PInvokes.GSettings.GetRange(GSettingsPtr, key));
         [Obsolete("Deprecated since Version 2.40, Use SchemaKeyRangeCheck instead")]
-        public bool RangeCheck(string key, object value)
-        {
-            // value is a GVariant
-            throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
-            return PInvokes.GSettings.RangeCheck(Settings, key, value);
-        }
+        public bool RangeCheck(string key, GVariant value) => PInvokes.GSettings.RangeCheck(GSettingsPtr, key, value.GVariantPtr);
 
         public void Get(string key, string format, params object[] formatArgs)
         {
             throw new NotImplementedException("Not implemented.");
-            PInvokes.GSettings.Get(Settings, key, format, formatArgs);
+            PInvokes.GSettings.Get(GSettingsPtr, key, format, formatArgs);
         }
 
         public void Set(string key, string format, params object[] formatArgs)
         {
             throw new NotImplementedException("Not implemented.");
-            PInvokes.GSettings.Get(Settings, key, format, formatArgs);
+            PInvokes.GSettings.Get(GSettingsPtr, key, format, formatArgs);
         }
 
-        public bool GetBoolean(string key) => PInvokes.GSettings.GetBoolean(Settings, key);
-        public bool SetBoolean(string key, bool value) => PInvokes.GSettings.SetBoolean(Settings, key, value);
-        public int GetInt(string key) => PInvokes.GSettings.GetInt(Settings, key);
-        public bool SetInt(string key, int newValue) => PInvokes.GSettings.SetInt(Settings, key, newValue);
-        public long GetInt64(string key) => PInvokes.GSettings.GetInt64(Settings, key);
-        public bool SetInt64(string key, long newValue) => PInvokes.GSettings.SetInt64(Settings, key, newValue);
-        public uint GetUInt(string key) => PInvokes.GSettings.GetUInt(Settings, key);
-        public bool SetUInt(string key, uint newValue) => PInvokes.GSettings.SetUInt(Settings, key, newValue);
-        public ulong GetUInt64(string key) => PInvokes.GSettings.GetUInt64(Settings, key);
-        public bool SetUInt64(string key, ulong newValue) => PInvokes.GSettings.SetUInt64(Settings, key, newValue);
-        public double GetDouble(string key) => PInvokes.GSettings.GetDouble(Settings, key);
-        public bool SetDouble(string key, double value) => PInvokes.GSettings.SetDouble(Settings, key, value);
-        public string GetString(string key) => PInvokes.GSettings.GetString(Settings, key);
-        public bool SetString(string key, string value) => PInvokes.GSettings.SetString(Settings, key, value);
+        public bool GetBoolean(string key) => PInvokes.GSettings.GetBoolean(GSettingsPtr, key);
+        public bool SetBoolean(string key, bool value) => PInvokes.GSettings.SetBoolean(GSettingsPtr, key, value);
+        public int GetInt(string key) => PInvokes.GSettings.GetInt(GSettingsPtr, key);
+        public bool SetInt(string key, int newValue) => PInvokes.GSettings.SetInt(GSettingsPtr, key, newValue);
+        public long GetInt64(string key) => PInvokes.GSettings.GetInt64(GSettingsPtr, key);
+        public bool SetInt64(string key, long newValue) => PInvokes.GSettings.SetInt64(GSettingsPtr, key, newValue);
+        public uint GetUInt(string key) => PInvokes.GSettings.GetUInt(GSettingsPtr, key);
+        public bool SetUInt(string key, uint newValue) => PInvokes.GSettings.SetUInt(GSettingsPtr, key, newValue);
+        public ulong GetUInt64(string key) => PInvokes.GSettings.GetUInt64(GSettingsPtr, key);
+        public bool SetUInt64(string key, ulong newValue) => PInvokes.GSettings.SetUInt64(GSettingsPtr, key, newValue);
+        public double GetDouble(string key) => PInvokes.GSettings.GetDouble(GSettingsPtr, key);
+        public bool SetDouble(string key, double value) => PInvokes.GSettings.SetDouble(GSettingsPtr, key, value);
+        public string GetString(string key) => PInvokes.GSettings.GetString(GSettingsPtr, key);
+        public bool SetString(string key, string value) => PInvokes.GSettings.SetString(GSettingsPtr, key, value);
 
         public ICollection<string> GetStringV(string key)
         {
-            var originalPointer = PInvokes.GSettings.GetStrv(Settings, key);
+            var originalPointer = PInvokes.GSettings.GetStrv(GSettingsPtr, key);
             var children = MarshalUtility.MarshalStringArray(originalPointer);
 
             return children;
         }
 
-        public bool SetStringV(string key, ICollection<string> value) => PInvokes.GSettings.SetStrv(Settings, key, value.ToArray());
+        public bool SetStringV(string key, ICollection<string> value) => PInvokes.GSettings.SetStrv(GSettingsPtr, key, value.ToArray());
 
-        public int GetEnum(string key) => PInvokes.GSettings.GetEnum(Settings, key);
-        public bool SetEnum(string key, int value) => PInvokes.GSettings.SetEnum(Settings, key, value);
-        public uint GetFlags(string key) => PInvokes.GSettings.GetFlags(Settings, key);
-        public bool SetFlags(string key, uint value) => PInvokes.GSettings.SetFlags(Settings, key, value);
-
-        //[DllImport("libgio-2.0.so", EntryPoint = "GSettingsGetMapping")]
-        //public static extern unsafe bool GetMapping(object value, void* result, void* userData);
-        //[DllImport("libgio-2.0.so", EntryPoint = "g_settings_get_mapped")]
-        //public static extern unsafe void* GetMapped(uint settings, string key, gSettingMapping mapping, void* userData);
-
-        // g_settings_bind 
-        // g_settings_bind_with_mapping 
-        // g_settings_bind_writable
-        // g_settings_unbind
-        // GSettingsBindSetMapping
-        // GSettingsBindGetMapping
+        public int GetEnum(string key) => PInvokes.GSettings.GetEnum(GSettingsPtr, key);
+        public bool SetEnum(string key, int value) => PInvokes.GSettings.SetEnum(GSettingsPtr, key, value);
+        public uint GetFlags(string key) => PInvokes.GSettings.GetFlags(GSettingsPtr, key);
+        public bool SetFlags(string key, uint value) => PInvokes.GSettings.SetFlags(GSettingsPtr, key, value);
 
         public GAction CreateAction(string key)
         {
-            var gActionPtr = PInvokes.GSettings.CreateAction(Settings, key);
+            var gActionPtr = PInvokes.GSettings.CreateAction(GSettingsPtr, key);
 
             return new GAction(gActionPtr);
         }

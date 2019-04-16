@@ -22,7 +22,7 @@
     </key>
 
     <key type="i" name="test-int">
-      <range min="1" max="100"/>
+      <range min="-100" max="100"/>
       <default>50</default>
       <summary>Some test-integer</summary>
       <description>Some test integer from 1 to 100 about something</description>
@@ -35,7 +35,7 @@
     </key>
 
     <key type="d" name="test-double">
-      <default>12.34</default>
+      <default>3.1415999999999999</default>
       <summary>Some double value</summary>
       <description>Some double value with default</description>
     </key>
@@ -76,6 +76,12 @@
       <default>['flag2', 'flag3']</default>
       <summary>Play with flags</summary>
       <description>Flags can have multiple state at the same time</description>
+    </key>
+
+    <key name="test-string" type="s">
+      <default>'Captain Morgan'</default>
+      <summary>Some string</summary>
+      <description>Argh</description>
     </key>
 
     <!-- Use a structure of the book -->

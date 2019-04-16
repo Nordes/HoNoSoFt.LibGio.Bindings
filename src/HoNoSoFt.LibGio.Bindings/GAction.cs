@@ -46,13 +46,13 @@ namespace HoNoSoFt.LibGio.Bindings
         public void ChangeState(GVariant gVariant)
         {
             throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
-            PInvokes.GAction.ChangeState(_gAction, gVariant.ValuePtr);
+            PInvokes.GAction.ChangeState(_gAction, gVariant.GVariantPtr);
         }
 
         public void Activate(GVariant gVariantParameter)
         {
             throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
-            PInvokes.GAction.Activate(_gAction, gVariantParameter.ValuePtr);
+            PInvokes.GAction.Activate(_gAction, gVariantParameter.GVariantPtr);
         }
 
         // ParseDetailedName (will not work for now, too complex?)
@@ -60,7 +60,7 @@ namespace HoNoSoFt.LibGio.Bindings
         public string PrintDetailedName(GVariant gVariant)
         {
             throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
-            PInvokes.GAction.PrintDetailedName(_gAction, gVariant.ValuePtr);
+            PInvokes.GAction.PrintDetailedName(_gAction, gVariant.GVariantPtr);
         }
     }
 }
