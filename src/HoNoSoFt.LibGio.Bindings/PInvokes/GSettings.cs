@@ -39,11 +39,11 @@ namespace HoNoSoFt.LibGio.Bindings.PInvokes
 
         [Obsolete("Deprecated since Version 2.40, Use g_settings_schema_source_list_schemas() or g_settings_schema_source_lookup()")]
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_list_schemas")]
-        public static extern string[] ListSchemas();
+        public static extern IntPtr ListSchemas();
 
         [Obsolete("Deprecated since Version 2.40, Use g_settings_schema_source_list_schemas() instead")]
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_list_relocatable_schemas")]
-        public static extern string[] ListRelocatableSchemas();
+        public static extern IntPtr ListRelocatableSchemas();
 
         [Obsolete("Deprecated: g_settings_list_keys should not be used in newly created code")]
         [DllImport("libgio-2.0.so", EntryPoint = "g_settings_list_keys")]

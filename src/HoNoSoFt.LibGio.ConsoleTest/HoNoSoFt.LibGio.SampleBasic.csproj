@@ -11,4 +11,8 @@
     <ProjectReference Include="..\HoNoSoFt.LibGio.Bindings\HoNoSoFt.LibGio.Bindings.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Menus\" />
+  </ItemGroup>
+
 </Project>

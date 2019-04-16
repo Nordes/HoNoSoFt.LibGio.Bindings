@@ -85,17 +85,15 @@ namespace HoNoSoFt.LibGio.Bindings
         public GVariant GetDefaultValue(string key) => new GVariant(PInvokes.GSettings.GetDefaultValue(GSettingsPtr, key));
 
         [Obsolete("Deprecated since Version 2.40, Use SchemaSourceListSchemas() or SchemaSourceLookup() instead")]
-        public string[] ListSchemas()
+        public static ICollection<string> ListSchemas()
         {
-            // TODO Code is wrong... should return a IntPtr
-            return PInvokes.GSettings.ListSchemas();
+            return MarshalUtility.MarshalStringArray(PInvokes.GSettings.ListSchemas());
         }
         
         [Obsolete("Deprecated since Version 2.40, Use SchemaSourceListSchemas() instead")]
-        public string[] ListRelocatableSchemas()
+        public ICollection<string> ListRelocatableSchemas()
         {
-            // TODO Code is wrong... should return a IntPtr
-            return PInvokes.GSettings.ListRelocatableSchemas();
+            return MarshalUtility.MarshalStringArray(PInvokes.GSettings.ListRelocatableSchemas());
         }
 
         /// <summary>
