@@ -1,20 +1,20 @@
 ﻿module Menu
 open System;
 open Domain;
-open HoNoSoFt.LibGio.Bindings;
+open Operations;
 
 let showAvailableSchemas () =
     printfn ""
     printfn "Here's the available schemas:"
-    GSettings.ListSchemas()
-        |> Seq.iter (fun f-> printfn "\t%s" f)
+    showSchemas() |> ignore
     printfn "----------------------------------------------------------------"
     0
 
 let chooseSchemas () =
     printfn """Which schemas would you like to work with? (enter the "name", e.g.: org.gnome.desktop.calendar)"""
-    printf "\t> "
-    let schema = Console.ReadLine()
+    chooseSchema() 
+        |> displaySchemaDetails
+        |> ignore // showSchema
     // |> tryParseSchema name...
     // |> showGSettingsMenu
     printfn "----------------------------------------------------------------"
@@ -24,8 +24,8 @@ let mainMenu () =
     printfn ""
     printfn "What do you want to do?"
     printfn "  1. List the available Schema (no path)."
-    printfn "  2. Choose one of the available schema and show details."
-    printfn "  3. Select a specific Schema (using path)."
+    printfn "  2. Choose from available schema (1)."
+    printfn "  3. Specify a schema (using path)"
     printfn "  x. Exit"
     printf "Choice: "
     let key = Console.ReadKey().KeyChar
@@ -43,5 +43,6 @@ let tryParseMainMenu (cmd:char) =
 let processMainMenu choice =
     match choice with 
         | ListAvailableSchema -> showAvailableSchemas()
+        | ChooseFromAvailableSchema -> chooseSchemas()
         | _ ->  printfn "Not yet available..."
                 0

@@ -19,7 +19,6 @@ namespace HoNoSoFt.LibGio.Bindings
 
         public string TypePeekString() => PInvokes.GVariantType.TypePeekString(GVariantTypePtr);
         public int GetStringLength() => PInvokes.GVariantType.GetStringLength(GVariantTypePtr);
-
         public string DupString() => PInvokes.GVariantType.DupString(GVariantTypePtr);
         public bool IsDefinite() => PInvokes.GVariantType.IsDefinite(GVariantTypePtr);
         public bool IsContainer() => PInvokes.GVariantType.IsContainer(GVariantTypePtr);
@@ -29,7 +28,6 @@ namespace HoNoSoFt.LibGio.Bindings
         public bool IsTuple() => PInvokes.GVariantType.IsTuple(GVariantTypePtr);
         public bool IsDictEntry() => PInvokes.GVariantType.IsDictEntry(GVariantTypePtr);
         public bool IsVariant() => PInvokes.GVariantType.IsVariant(GVariantTypePtr);
-
         public uint Hash() => PInvokes.GVariantType.Hash(GVariantTypePtr);
         public bool Equal(GVariantType equalTo) => PInvokes.GVariantType.Equal(GVariantTypePtr, equalTo.GVariantTypePtr);
         public bool IsSubTypeOf(GVariantType superType) => PInvokes.GVariantType.IsSubTypeOf(GVariantTypePtr, superType.GVariantTypePtr);
@@ -37,9 +35,7 @@ namespace HoNoSoFt.LibGio.Bindings
         public static GVariantType NewArray(GVariantType gVariantType) => new GVariantType(PInvokes.GVariantType.NewArray(gVariantType.GVariantTypePtr));
         public static GVariantType NewTuple(GVariantType gVariantType, int length) => new GVariantType(PInvokes.GVariantType.NewTuple(gVariantType.GVariantTypePtr, length));
         public static GVariantType NewDictEntry(GVariantType key, GVariantType value) => new GVariantType(PInvokes.GVariantType.NewDictEntry(key.GVariantTypePtr, value.GVariantTypePtr));
-
         public GVariantType Element() => new GVariantType(PInvokes.GVariantType.Element(GVariantTypePtr));
-
         public ulong NItems() => PInvokes.GVariantType.NItems(GVariantTypePtr);
         public GVariantType First() => new GVariantType(PInvokes.GVariantType.First(GVariantTypePtr));
         public GVariantType Next() => new GVariantType(PInvokes.GVariantType.Next(GVariantTypePtr));
