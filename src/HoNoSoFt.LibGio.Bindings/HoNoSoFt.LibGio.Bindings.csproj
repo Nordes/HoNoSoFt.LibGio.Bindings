@@ -9,7 +9,7 @@
     <Company>HoNoSoFt</Company>
     <Description>Wrapper library in order to communicate with LibGio/GLib (GSettings, DBus, ...) in Linux. The idea is to have something better than calling a command line process for each GSettings setting, etc.</Description>
     <Copyright>Copyright 2019</Copyright>
-    <PackageLicenseExpression>https://github.com/nordes/HoNoSoFt.LibGio.Bindings/blob/master/LICENSE</PackageLicenseExpression>
+    <PackageLicenseExpression>https://raw.githubusercontent.com/Nordes/HoNoSoFt.LibGio.Bindings/master/LICENSE</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/nordes/HoNoSoFt.LibGio.Bindings</PackageProjectUrl>
     <PackageIconUrl>https://www.honosoft.com/img/logo.png</PackageIconUrl>
     <RepositoryUrl>https://github.com/nordes/HoNoSoFt.LibGio.Bindings</RepositoryUrl>
