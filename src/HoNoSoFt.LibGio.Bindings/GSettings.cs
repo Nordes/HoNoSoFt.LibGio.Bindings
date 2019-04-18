@@ -117,6 +117,17 @@ namespace HoNoSoFt.LibGio.Bindings
         public bool SetEnum(string key, int value) => PInvokes.GSettings.SetEnum(GSettingsPtr, key, value);
         public uint GetFlags(string key) => PInvokes.GSettings.GetFlags(GSettingsPtr, key);
         public bool SetFlags(string key, uint value) => PInvokes.GSettings.SetFlags(GSettingsPtr, key, value);
+
+        /*
+        (*GSettingsGetMapping) ()
+        g_settings_get_mapped ()
+        g_settings_bind ()
+        g_settings_bind_with_mapping ()
+        g_settings_bind_writable ()
+        g_settings_unbind ()
+        (*GSettingsBindSetMapping) ()
+        (*GSettingsBindGetMapping) ()
+        */
         public GAction CreateAction(string key) => new GAction(PInvokes.GSettings.CreateAction(GSettingsPtr, key));
     }
 }

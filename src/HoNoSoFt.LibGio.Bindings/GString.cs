@@ -13,10 +13,6 @@ namespace HoNoSoFt.LibGio.Bindings
         public string Free(bool freeSegment)
         {
             var result = PInvokes.GString.Free(GStringPtr, freeSegment);
-            //if (freeSegment)
-            //{
-            //    GStringPtr = IntPtr.Zero;
-            //}
 
             return result;
         }

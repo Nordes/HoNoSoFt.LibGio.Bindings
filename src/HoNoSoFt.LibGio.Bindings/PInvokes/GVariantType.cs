@@ -71,6 +71,6 @@ namespace HoNoSoFt.LibGio.Bindings.PInvokes
         [DllImport("libgio-2.0.so", EntryPoint = "g_variant_type_string_is_valid")]
         internal static extern bool StringIsValid(string typeString);
         [DllImport("libgio-2.0.so", EntryPoint = "g_variant_type_string_scan")]
-        internal static extern bool StringIsValid(string typeString, string limit, IntPtr endPtr);
+        internal static extern bool StringScan(string typeString, string limit, IntPtr endPtr);
     }
 }

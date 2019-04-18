@@ -1,7 +1,23 @@
 # LibGio.Bindings
-Binding between `libgio` (gsettings) and the Dotnet world.
+Binding between `libgio` (gsettings, glib, ...) and the Dotnet world. The naming convention is really close to the C++ version, however, instead of working with pointers, everything have been moved into objects for abstraction purpose. Also, the library does not expose the C++ pointer directly.
 
-## Tests
+**Example (F#, but c# is pretty much the same):**
+```csharp
+let showSchemas () = 
+    let schemaSource = new GSettingsSchemaSource()
+    let schemas = schemaSource.ListSchemas(false)
+    printfn "\tRelocatable:"
+    List.ofSeq schemas.Relocatable |> Seq.sortBy (fun f -> f) |> Seq.iter (fun schema -> printfn "\t\t%s" schema)
+    printfn "\tNon-Relocatable:"
+    List.ofSeq schemas.NonRelocatable |> Seq.sortBy (fun f -> f) |> Seq.iter (fun schema -> printfn "\t\t%s" schema)
+
+    schemas
+```
+
+**Important!**
+> There's a possibility of memory leak on a few calls. Since the projects is not advanced enough, it is not totally covered. However some part are already managed. This is due to the calls to the C++ library.
+
+## How to run the Integration Tests
 To avoid running the tests within Visual Studio, you can filter the tests to remove the Trait by adding the search condition to : `-Trait:"Integration"`.
 
 **Future:** Use some kind of attribute to skip those tests in the VS UI: https://github.com/AArnott/Xunit.SkippableFact/pull/7#issuecomment-393395780

@@ -18,6 +18,7 @@ namespace HoNoSoFt.LibGio.Bindings
             GVariantTypePtr = gVariantType;
         }
 
+        public static bool StringIsValid(string typeString) => PInvokes.GVariantType.StringIsValid(typeString);
         public string TypePeekString() => Marshal.PtrToStringAnsi(PInvokes.GVariantType.TypePeekString(GVariantTypePtr));
         public int GetStringLength() => PInvokes.GVariantType.GetStringLength(GVariantTypePtr);
         public string DupString() => Marshal.PtrToStringAnsi(PInvokes.GVariantType.DupString(GVariantTypePtr));
