@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using HoNoSoFt.LibGio.Bindings;
+﻿using HoNoSoFt.LibGio.Bindings;
 using HoNoSoFt.LibGio.IntegrationTests.Fixtures;
 using Xunit;
 
@@ -10,11 +8,11 @@ namespace HoNoSoFt.LibGio.IntegrationTests
     [Collection("GSchema collection")]
     public class GVariantTest
     {
-        private readonly IntPtr _schema;
+        private readonly GSettings _gSettings;
 
         public GVariantTest(GSchemaFixture schemaFix)
         {
-            _schema = new GSettings(schemaFix.SchemaName).GSettingsPtr;
+            _gSettings = new GSettings(schemaFix.SchemaName);
         }
 
         [Theory]
@@ -28,13 +26,13 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         [InlineData("test-string", "s")]
         [InlineData("current-state", "s")]
         [InlineData("my-flag-is-active", "b")]
-        public void GetType_ShouldReturnsTheObjectType(string key, string gVariantTypeString)
+        public void GetVariantType_ShouldReturnsTheObjectType(string key, string gVariantTypeString)
         {
             // Prepare
-            var gVariantValue = Bindings.PInvokes.GSettings.GetValue(_schema, key);
+            var gVariant = _gSettings.GetValue(key);
             // Execute
-            var variantType = Bindings.PInvokes.GVariant.GetType(gVariantValue);
-            var typeAsString = Bindings.PInvokes.GVariantType.TypePeekString(variantType);
+            var variantType = gVariant.GetVariantType();
+            var typeAsString = variantType.TypePeekString();
             // Verify
             Assert.Equal(gVariantTypeString, typeAsString);
         }
@@ -54,9 +52,8 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void GetTypeString_ShouldReturnsTheObjectType(string key, string gVariantTypeString)
         {
             // Prepare
-            var gVariantPtr = Bindings.PInvokes.GSettings.GetValue(_schema, key);
+            var gVariant = _gSettings.GetValue(key);
             // Execute
-            var gVariant = new GVariant(gVariantPtr);
             var typeAsString = gVariant.GetTypeString();
             // Verify
             Assert.Equal(gVariantTypeString, typeAsString);
@@ -77,9 +74,8 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         {
             // Prepare
             var gVariantType = new GVariantType(expectedType);
-            var gVariantPtr = Bindings.PInvokes.GSettings.GetValue(_schema, key);
+            var gVariant = _gSettings.GetValue(key);
             // Execute
-            var gVariant = new GVariant(gVariantPtr);
             var result = gVariant.IsOfType(gVariantType);
             // Verify
             Assert.True(result);
@@ -91,9 +87,8 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void IsContainer_ShouldReturnsTrueIfContainer(string key)
         {
             // Prepare
-            var gVariantPtr = Bindings.PInvokes.GSettings.GetValue(_schema, key);
+            var gVariant = _gSettings.GetValue(key);
             // Execute
-            var gVariant = new GVariant(gVariantPtr);
             var result = gVariant.IsContainer();
             // Assert
             Assert.True(result);
@@ -111,9 +106,8 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void IsContainer_ShouldReturnsFalseIfNotContainer(string key)
         {
             // Prepare
-            var gVariantPtr = Bindings.PInvokes.GSettings.GetValue(_schema, key);
+            var gVariant = _gSettings.GetValue(key);
             // Execute
-            var gVariant = new GVariant(gVariantPtr);
             var result = gVariant.IsContainer();
             // Assert
             Assert.False(result);
@@ -132,9 +126,8 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void Classify_ShouldSucceed(string key, string mainClassName)
         {
             // Prepare
-            var gVariantPtr = Bindings.PInvokes.GSettings.GetValue(_schema, key);
+            var gVariant = _gSettings.GetValue(key);
             // Execute
-            var gVariant = new GVariant(gVariantPtr);
             var result = gVariant.Classify();
             // Verify
             Assert.Equal(mainClassName, result.ToString());
@@ -154,9 +147,8 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void Print_ShouldRetrieveTheDataTypeAnnotateWithSuccess(string key, string prettyPrint)
         {
             // Prepare
-            var gVariantPtr = Bindings.PInvokes.GSettings.GetValue(_schema, key);
+            var gVariant = _gSettings.GetValue(key);
             // Execute
-            var gVariant = new GVariant(gVariantPtr);
             var content = gVariant.Print(true);
             // Verify
             Assert.Equal(prettyPrint, content);
@@ -176,9 +168,8 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void Print_ShouldRetrieveTheDataNoTypeAnnotateWithSuccess(string key, string prettyPrint)
         {
             // Prepare
-            var gVariantPtr = Bindings.PInvokes.GSettings.GetValue(_schema, key);
+            var gVariant = _gSettings.GetValue(key);
             // Execute
-            var gVariant = new GVariant(gVariantPtr);
             var content = gVariant.Print(false);
             // Verify
             Assert.Equal(prettyPrint, content);
@@ -198,9 +189,8 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void PrintString_ShouldReturnOnlyValue(string key, string prettyPrint)
         {
             // Prepare
-            var gVariantPtr = Bindings.PInvokes.GSettings.GetValue(_schema, key);
+            var gVariant = _gSettings.GetValue(key);
             // Execute
-            var gVariant = new GVariant(gVariantPtr);
             var result = gVariant.PrintString(null, false);
             // Verify
             Assert.Equal(prettyPrint, result);
@@ -220,12 +210,40 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void PrintString_ShouldReturnPrefixAndValue(string key, string prettyPrint)
         {
             // Prepare
-            var gVariantPtr = Bindings.PInvokes.GSettings.GetValue(_schema, key);
+            var gVariant = _gSettings.GetValue(key);
             // Execute
-            var gVariant = new GVariant(gVariantPtr);
             var result = gVariant.PrintString("Hello ", false);
             // Verify
             Assert.Equal(prettyPrint, result);
+        }
+
+        [Theory]
+        [InlineData("test-int", 1, 49)]
+        [InlineData("test-int", 0, 50)]
+        [InlineData("test-int", -1, 51)]
+        public void Compare_ShouldReturnProperValueWhenInt(string key, int compareResult, int assignedValue)
+        {
+            // Prepare
+            var gValue = new GVariant(assignedValue);
+            var gVariant = _gSettings.GetValue(key);
+            // Execute
+            var result = gVariant.Compare(gValue);
+            // Assert
+            Assert.Equal(compareResult, result);
+        }
+
+        [Theory]
+        [InlineData("test-long", 1, 9223372036854775806)]
+        [InlineData("test-long", 0, 9223372036854775807)]
+        public void Compare_ShouldReturnProperValueWhenLong(string key, int compareResult, long assignedValue)
+        {
+            // Prepare
+            var gValue = new GVariant(assignedValue);
+            var gVariant = _gSettings.GetValue(key);
+            // Execute
+            var result = gVariant.Compare(gValue);
+            // Assert
+            Assert.Equal(compareResult, result);
         }
     }
 }

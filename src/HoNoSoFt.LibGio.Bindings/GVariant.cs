@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using static HoNoSoFt.LibGio.Bindings.PInvokes.GVariant;
 
 namespace HoNoSoFt.LibGio.Bindings
 {
@@ -18,6 +17,7 @@ namespace HoNoSoFt.LibGio.Bindings
         public GVariant(bool value) => RefVariant(PInvokes.GVariant.NewBoolean(value));
         public GVariant(byte value) => RefVariant(PInvokes.GVariant.NewByte(value));
         public GVariant(short value) => RefVariant(PInvokes.GVariant.NewInt16(value));
+        public GVariant(int value) => RefVariant(PInvokes.GVariant.NewInt(value));
         public GVariant(long value) => RefVariant(PInvokes.GVariant.NewInt64(value));
         public GVariant(ulong value) => RefVariant(PInvokes.GVariant.NewUInt64(value));
         public GVariant(double value) => RefVariant(PInvokes.GVariant.NewDouble(value));
@@ -37,7 +37,7 @@ namespace HoNoSoFt.LibGio.Bindings
         public bool IsContainer() => PInvokes.GVariant.IsContainer(GVariantPtr);
         public GVariant RefSink() => new GVariant(PInvokes.GVariant.RefSink(GVariantPtr));
         public GVariant TakeRef() => new GVariant(PInvokes.GVariant.TakeRef(GVariantPtr));
-        public GVariantType GetCurrentType() => new GVariantType(PInvokes.GVariant.GetType(GVariantPtr));
+        public GVariantType GetVariantType() => new GVariantType(PInvokes.GVariant.GetType(GVariantPtr));
         public string GetTypeString() => Marshal.PtrToStringAnsi(PInvokes.GVariant.GetTypeString(GVariantPtr));
         public static bool IsObjectPathValid(string objectPath) => PInvokes.GVariant.IsObjectPath(objectPath);
         public static bool IsSignatureValid(string objectPath) => PInvokes.GVariant.IsSignature(objectPath);

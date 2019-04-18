@@ -17,7 +17,8 @@ let displaySchemaDetails (item:GSettingsSchema) =
     printfn "\tId: %s" (item.GetId())
     printfn "\tPath: %s" (item.GetPath())
     printfn "\tKeys:" 
-    List.ofSeq (item.ListKeys().ToList()) |> Seq.iter (fun f -> printfn "\t\t%s" f)
+    List.ofSeq (item.ListKeys().ToList())
+        |> Seq.iter (fun f -> printfn "\t\t%s" f)
 
     item
 

@@ -32,7 +32,7 @@ let mainMenu () =
     printfn ""
     key
 
-let tryParseMainMenu (cmd:char) =
+let tryParseMainMenu cmd =
     match cmd with
         | '1' -> Some ListAvailableSchema
         | '2' -> Some ChooseFromAvailableSchema

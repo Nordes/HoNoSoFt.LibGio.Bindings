@@ -17,7 +17,6 @@ namespace HoNoSoFt.LibGio.Bindings
     {
         //// https://developer.gnome.org/gio/stable/GSettings.html#g-settings-get-int64
         // This should be disposed at some point... otherwise I suspect a memory leak.
-        // Should be private.
         internal IntPtr GSettingsPtr { get; set; }
 
         internal GSettings(IntPtr rawGSettings) => GSettingsPtr = rawGSettings;
@@ -27,80 +26,27 @@ namespace HoNoSoFt.LibGio.Bindings
         // Not implemented: g_settings_new_with_backend_and_path
         // Not implemented: g_settings_new_full 
 
-        /// <summary>
-        /// https://developer.gnome.org/gio/stable/GSettings.html#g-settings-sync
-        /// </summary>
         public static void Sync() => PInvokes.GSettings.Sync();
 
-        /// <summary>
-        /// Get the value.
-        /// </summary>
-        /// <param name="settings"></param>
-        /// <param name="key"></param>
-        /// <returns>A GVariant</returns>
-        /// <remarks>
-        /// https://developer.gnome.org/glib/stable/glib-GVariant.html#GVariant
-        /// https://developer.gnome.org/glib/stable/glib-GVariantType.html GVariant type...
-        /// https://developer.gnome.org/gobject/stable/gobject-Enumeration-and-Flag-Types.html
-        /// https://blog.spyzone.fr/2011/05/ecouter-les-messages-dbus-via-gio/
-        ///
-        /// https://stackoverflow.com/questions/17379492/marshal-c-struct-to-c-sharp
-        /// https://people.gnome.org/~desrt/glib-docs/glib-GVariant.html
-        /// https://github.com/GNOME/glib/blob/master/glib/gvariant.c
-        /// </remarks>
-        public string GetValue(string key)
-        {
-            var gVariantValue = PInvokes.GSettings.GetValue(GSettingsPtr, key);
-            var variantTypeStr = PInvokes.GVariant.GetType(gVariantValue);
-            var gvariantType = new GVariantType(variantTypeStr);
-            var typeAsString = gvariantType.TypePeekString(); // useless.
-            // TypePeekString : Should be used with g_variant_type_get_string_length
-
-            // depending on the string, we should then try to return the value
-            throw new NotImplementedException("Missing the value (Can be completed after GVariant full implementation.");
-            return typeAsString;
-        }
-
+        public GVariant GetValue(string key) => new GVariant(PInvokes.GSettings.GetValue(GSettingsPtr, key));
         public bool SetValue(string key, GVariant value) => PInvokes.GSettings.SetValue(GSettingsPtr, key, value.GVariantPtr);
         public bool IsWritable(string key) => PInvokes.GSettings.IsWritable(GSettingsPtr, key);
-
-        /// <summary>
-        /// https://developer.gnome.org/gio/stable/GSettings.html#g-settings-delay
-        /// Combination with Apply() to create "transactions" and Revert() to "rollback"
-        /// </summary>
         public void Delay() => PInvokes.GSettings.Delay(GSettingsPtr);
         public void Apply() => PInvokes.GSettings.Apply(GSettingsPtr);
         public void Revert() => PInvokes.GSettings.Revert(GSettingsPtr);
         public bool HasUnApplied() => PInvokes.GSettings.HasUnApplied(GSettingsPtr);
-
-        public GSettings GetChild(string childSchemaName)
-        {
-            var childSettings = PInvokes.GSettings.GetChild(GSettingsPtr, childSchemaName);
-
-            return new GSettings(childSettings);
-        }
-
+        public GSettings GetChild(string childSchemaName) => new GSettings(PInvokes.GSettings.GetChild(GSettingsPtr, childSchemaName));
         public void Reset(string key) => PInvokes.GSettings.Reset(GSettingsPtr, key);
         public GVariant GetUserValue(string key) => new GVariant(PInvokes.GSettings.GetUserValue(GSettingsPtr, key));
         public GVariant GetDefaultValue(string key) => new GVariant(PInvokes.GSettings.GetDefaultValue(GSettingsPtr, key));
 
-        [Obsolete("Deprecated since Version 2.40, Use GSettingsSchemaSourceListSchemas() or GSettingsSchemaSourceLookup() instead")]
-        public static ICollection<string> ListSchemas()
-        {
-            return MarshalUtility.MarshalStringArray(PInvokes.GSettings.ListSchemas());
-        }
-        
-        [Obsolete("Deprecated since Version 2.40, Use GSettingsSchemaSourceListSchemas() instead")]
-        public ICollection<string> ListRelocatableSchemas()
-        {
-            return MarshalUtility.MarshalStringArray(PInvokes.GSettings.ListRelocatableSchemas());
-        }
+        [Obsolete("Deprecated since Version 2.40, Use GSettingsSchemaSource.ListSchemas() or GSettingsSchemaSource.Lookup() instead")]
+        public static ICollection<string> ListSchemas() => MarshalUtility.MarshalStringArray(PInvokes.GSettings.ListSchemas());
 
-        /// <summary>
-        /// Deprecated, don't use except in real need.
-        /// </summary>
-        /// <returns>List of keys in the schema</returns>
-        [Obsolete("Deprecated, don't use except in real need. This function is intended for introspection reasons.")]
+        [Obsolete("Deprecated since Version 2.40, Use GSettingsSchemaSource.ListSchemas() instead")]
+        public ICollection<string> ListRelocatableSchemas() => MarshalUtility.MarshalStringArray(PInvokes.GSettings.ListRelocatableSchemas());
+
+        [Obsolete("Deprecated, don't use except in real need. This function is intended for introspection reasons. Use GSettingsSchema.ListKeys instead")]
         public ICollection<string> ListKeys()
         {
             var originalPointer = PInvokes.GSettings.ListKeys(GSettingsPtr);
@@ -113,11 +59,6 @@ namespace HoNoSoFt.LibGio.Bindings
             return keys;
         }
 
-        /// <summary>
-        /// There is little reason to call this function from "normal" code, since you should already know what
-        /// children are in your schema.
-        /// </summary>
-        /// <returns>Collection of children.</returns>
         public ICollection<string> ListChildren()
         {
             var originalPointer = PInvokes.GSettings.ListChildren(GSettingsPtr);
@@ -130,18 +71,19 @@ namespace HoNoSoFt.LibGio.Bindings
             return children;
         }
 
-        [Obsolete("Deprecated since Version 2.40, Use SchemaKeyGetRange instead")]
+        [Obsolete("Deprecated since Version 2.40, Use GSettingsSchemaKey.GetRange instead")]
         public GVariant GetRange(string key) => new GVariant(PInvokes.GSettings.GetRange(GSettingsPtr, key));
-        [Obsolete("Deprecated since Version 2.40, Use SchemaKeyRangeCheck instead")]
+
+        [Obsolete("Deprecated since Version 2.40, Use GSettingsSchemaKey.RangeCheck instead")]
         public bool RangeCheck(string key, GVariant value) => PInvokes.GSettings.RangeCheck(GSettingsPtr, key, value.GVariantPtr);
 
-        public void Get(string key, string format, params object[] formatArgs)
+        internal void Get(string key, string format, params object[] formatArgs)
         {
             throw new NotImplementedException("Not implemented.");
             PInvokes.GSettings.Get(GSettingsPtr, key, format, formatArgs);
         }
 
-        public void Set(string key, string format, params object[] formatArgs)
+        internal void Set(string key, string format, params object[] formatArgs)
         {
             throw new NotImplementedException("Not implemented.");
             PInvokes.GSettings.Get(GSettingsPtr, key, format, formatArgs);
@@ -171,17 +113,10 @@ namespace HoNoSoFt.LibGio.Bindings
         }
 
         public bool SetStringV(string key, ICollection<string> value) => PInvokes.GSettings.SetStrv(GSettingsPtr, key, value.ToArray());
-
         public int GetEnum(string key) => PInvokes.GSettings.GetEnum(GSettingsPtr, key);
         public bool SetEnum(string key, int value) => PInvokes.GSettings.SetEnum(GSettingsPtr, key, value);
         public uint GetFlags(string key) => PInvokes.GSettings.GetFlags(GSettingsPtr, key);
         public bool SetFlags(string key, uint value) => PInvokes.GSettings.SetFlags(GSettingsPtr, key, value);
-
-        public GAction CreateAction(string key)
-        {
-            var gActionPtr = PInvokes.GSettings.CreateAction(GSettingsPtr, key);
-
-            return new GAction(gActionPtr);
-        }
+        public GAction CreateAction(string key) => new GAction(PInvokes.GSettings.CreateAction(GSettingsPtr, key));
     }
 }

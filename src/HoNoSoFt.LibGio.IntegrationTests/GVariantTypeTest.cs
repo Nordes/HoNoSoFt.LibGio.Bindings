@@ -9,11 +9,11 @@ namespace HoNoSoFt.LibGio.IntegrationTests
     [Collection("GSchema collection")]
     public class GVariantTypeTest
     {
-        private readonly IntPtr _schema;
+        private readonly GSettings _gSettings;
 
         public GVariantTypeTest(GSchemaFixture schemaFix)
         {
-            _schema = new GSettings(schemaFix.SchemaName).GSettingsPtr;
+            _gSettings = new GSettings(schemaFix.SchemaName);
         }
 
         [Theory]
@@ -28,10 +28,10 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void GetStringLength_ShouldReturnTheTypeLength(string key, int length)
         {
             // Prepare
-            var gVariantValue = Bindings.PInvokes.GSettings.GetValue(_schema, key);
-            var variantType = Bindings.PInvokes.GVariant.GetType(gVariantValue);
+            var gVariant = _gSettings.GetValue(key);
+            var gVariantType = gVariant.GetVariantType();
             // Execute
-            var bufferSize = Bindings.PInvokes.GVariantType.GetStringLength(variantType);
+            var bufferSize = gVariantType.GetStringLength();
             // Verify
             Assert.Equal(length, bufferSize);
         }
@@ -42,9 +42,9 @@ namespace HoNoSoFt.LibGio.IntegrationTests
             // Prepare
             string typeString = "ai";
             // Execute
-            var gVariantTypeIntPtr = Bindings.PInvokes.GVariantType.New(typeString);
+            var gVariantTypeArrayInt = new GVariantType(typeString);
             // Verify
-            Assert.True(gVariantTypeIntPtr.ToInt64() > 0);
+            Assert.True(gVariantTypeArrayInt.GVariantTypePtr != IntPtr.Zero);
         }
     }
 }

@@ -53,6 +53,21 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         }
 
         [Fact]
+        public void SetBoolean_ShouldReturnTheBooleanValue()
+        {
+            // Prepare
+            var expectedValue = false;
+            // Execute
+            var result = _gSettings.SetBoolean("my-flag-is-active", expectedValue);
+            var resultUpdated = _gSettings.GetBoolean("my-flag-is-active");
+            // Assert
+            Assert.True(result);
+            Assert.Equal(expectedValue, resultUpdated);
+            // Reset the value to it's original state.
+            _gSettings.Reset("my-flag-is-active");
+        }
+
+        [Fact]
         public void GetDouble_ShouldReturnTheDoubleValue()
         {
             // Execute

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace HoNoSoFt.LibGio.Bindings
 {
@@ -17,9 +18,9 @@ namespace HoNoSoFt.LibGio.Bindings
             GVariantTypePtr = gVariantType;
         }
 
-        public string TypePeekString() => PInvokes.GVariantType.TypePeekString(GVariantTypePtr);
+        public string TypePeekString() => Marshal.PtrToStringAnsi(PInvokes.GVariantType.TypePeekString(GVariantTypePtr));
         public int GetStringLength() => PInvokes.GVariantType.GetStringLength(GVariantTypePtr);
-        public string DupString() => PInvokes.GVariantType.DupString(GVariantTypePtr);
+        public string DupString() => Marshal.PtrToStringAnsi(PInvokes.GVariantType.DupString(GVariantTypePtr));
         public bool IsDefinite() => PInvokes.GVariantType.IsDefinite(GVariantTypePtr);
         public bool IsContainer() => PInvokes.GVariantType.IsContainer(GVariantTypePtr);
         public bool IsBasic() => PInvokes.GVariantType.IsBasic(GVariantTypePtr);

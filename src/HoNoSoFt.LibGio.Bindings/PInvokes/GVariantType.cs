@@ -6,7 +6,7 @@ namespace HoNoSoFt.LibGio.Bindings.PInvokes
     internal static class GVariantType
     {
         [DllImport("libgio-2.0.so", EntryPoint = "g_variant_type_dup_string")]
-        internal static extern string TypePeekString(IntPtr gVariantType);
+        internal static extern IntPtr TypePeekString(IntPtr gVariantType);
         [DllImport("libgio-2.0.so", EntryPoint = "g_variant_type_get_string_length")]
         internal static extern int GetStringLength(IntPtr gVariantType);
 
@@ -29,7 +29,7 @@ namespace HoNoSoFt.LibGio.Bindings.PInvokes
         [DllImport("libgio-2.0.so", EntryPoint = "g_variant_type_new_dict_entry")]
         internal static extern IntPtr NewDictEntry(IntPtr key, IntPtr value);
         [DllImport("libgio-2.0.so", EntryPoint = "g_variant_type_dup_string")]
-        internal static extern string DupString(IntPtr gVariantType);
+        internal static extern IntPtr DupString(IntPtr gVariantType);
         [DllImport("libgio-2.0.so", EntryPoint = "g_variant_type_is_definite")]
         internal static extern bool IsDefinite(IntPtr gVariantType);
         [DllImport("libgio-2.0.so", EntryPoint = "g_variant_type_is_container")]
