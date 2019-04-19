@@ -9,7 +9,7 @@ namespace HoNoSoFt.LibGio.Bindings
     // Start the Tests: GSETTINGS_SCHEMA_DIR=~/schemas/ dbus-run-session dotnet test
     // ref: https://dbus.freedesktop.org/doc/dbus-run-session.1.html
     // Should be using some kind of pattern regarding the value.
-    // All API's defined by using command: `nm -D libgio-2.0.so`
+    // All API's defined by using command: `nm -D libgio-2.0.so.0`
     // https://developer.gnome.org/gio/stable/GSettings.html#g-settings-set-int64
     // https://developer.gnome.org/glib/stable/glib-Basic-Types.html#gint
     // Some example: https://lzone.de/examples/Glib

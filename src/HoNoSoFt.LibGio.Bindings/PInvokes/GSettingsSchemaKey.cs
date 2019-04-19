@@ -8,31 +8,31 @@ namespace HoNoSoFt.LibGio.Bindings.PInvokes
     /// </summary>
     internal class GSettingsSchemaKey
     {
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_schema_key_ref")]
+        [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_schema_key_ref")]
         public static extern IntPtr Ref(IntPtr gSettingsSchemaKey);
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_schema_key_unref")]
+        [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_schema_key_unref")]
         public static extern void UnRef(IntPtr gSettingsSchemaKey);
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_schema_key_get_value_type")]
+        [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_schema_key_get_value_type")]
         public static extern IntPtr GetValueType(IntPtr gSettingsSchemaKey);
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_schema_key_get_default_value")]
+        [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_schema_key_get_default_value")]
         public static extern IntPtr GetDefaultValue(IntPtr gSettingsSchemaKey);
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_schema_key_get_range")]
+        [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_schema_key_get_range")]
         public static extern IntPtr GetRange(IntPtr gSettingsSchemaKey);
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_schema_key_range_check")]
+        [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_schema_key_range_check")]
         public static extern bool RangeCheck(IntPtr gSettingsSchemaKey, IntPtr gVariantValue);
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_schema_key_get_name")]
+        [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_schema_key_get_name")]
         public static extern string GetName(IntPtr gSettingsSchemaKey);
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_schema_key_get_summary")]
+        [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_schema_key_get_summary")]
         public static extern string GetSummary(IntPtr gSettingsSchemaKey);
 
-        [DllImport("libgio-2.0.so", EntryPoint = "g_settings_schema_key_get_description")]
+        [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_schema_key_get_description")]
         public static extern string GetDescription(IntPtr gSettingsSchemaKey);
     }
 }

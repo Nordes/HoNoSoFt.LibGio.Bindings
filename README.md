@@ -17,6 +17,9 @@ let showSchemas () =
 **Important!**
 > There's a possibility of memory leak on a few calls. Since the projects is not advanced enough, it is not totally covered. However some part are already managed. This is due to the calls to the C++ library.
 
+## Dependency
+* /usr/lib/x86_64-linux-gnu/libgio-2.0.so.0 (LibGio)
+
 ## How to run the Integration Tests
 To avoid running the tests within Visual Studio, you can filter the tests to remove the Trait by adding the search condition to : `-Trait:"Integration"`.
 
