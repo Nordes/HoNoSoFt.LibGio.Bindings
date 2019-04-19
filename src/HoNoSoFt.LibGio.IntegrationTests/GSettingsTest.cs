@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using HoNoSoFt.LibGio.Bindings;
 using HoNoSoFt.LibGio.IntegrationTests.Assets.Models;
 using HoNoSoFt.LibGio.IntegrationTests.Fixtures;
@@ -26,6 +28,16 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         {
             var settings = new GSettings(_schemaFix.SchemaName);
             Assert.NotEqual(IntPtr.Zero, settings.GSettingsPtr);
+        }
+
+        [Fact]
+        public void Sync_ShouldCommitAll()
+        {
+            // Prepare
+            // Execute
+            GSettings.Sync();
+            // Assert
+            // Should simply not fail.
         }
 
         [Fact]
@@ -199,7 +211,7 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         [Fact]
         public void GetFlags_ShouldReturnsTheFlags()
         {
-            var result = (MyFlags) _gSettings.GetFlags("test-flags");
+            var result = (MyFlags)_gSettings.GetFlags("test-flags");
 
             Assert.False(result.HasFlag(MyFlags.Flag1));
             Assert.True(result.HasFlag(MyFlags.Flag2));
@@ -217,6 +229,150 @@ namespace HoNoSoFt.LibGio.IntegrationTests
             // Validate
             Assert.Equal(expected, string.Join(", ", result));
         }
+
+        [Fact]
+        public void SetValue_ShouldUpdateTheValueWithSuccess()
+        {
+            // Prepare
+            const int expectedNewValue = 42;
+            var gv = new GVariant(expectedNewValue);
+            // Execute
+            var result = _gSettings.SetValue("test-int", gv);
+            var newValue = _gSettings.GetInt("test-int");
+            // Validate
+            Assert.True(result);
+            Assert.Equal(expectedNewValue, newValue);
+            // Reset the value for next tests
+            _gSettings.Reset("test-int");
+        }
+
+        [Theory]
+        [InlineData("test-int")]
+        [InlineData("test-long")]
+        [InlineData("test-uint")]
+        [InlineData("test-uint64")]
+        [InlineData("test-double")]
+        [InlineData("test-string")]
+        [InlineData("current-state")]
+        [InlineData("my-flag-is-active")]
+        public void IsWritable_ShouldReturnIfWritable(string key)
+        {
+            // Prepare
+            // Execute
+            var isWritable = _gSettings.IsWritable(key);
+            // Validate
+            Assert.True(isWritable);
+        }
+
+        [Theory]
+        [InlineData("best-book")]
+        public void GetChild_ShouldReturnExistingChild(string childName)
+        {
+            // Prepare
+            // Execute
+            var gs = _gSettings.GetChild(childName);
+            var keys = gs.ListKeys();
+
+            // Validate
+            Assert.NotNull(gs);
+            Assert.NotNull(keys);
+            Assert.Equal(2, keys.Count);
+        }
+
+        [Fact]
+        public void GetUserValue_ShouldReturnCurrentUserValue()
+        {
+            // Prepare
+            const int userValue = 42;
+            // Execute
+            _gSettings.SetInt("test-int", userValue);
+            var gvUserValue = _gSettings.GetUserValue("test-int");
+            var result = gvUserValue.GetInt();
+            // Validate
+            Assert.Equal(userValue, result);
+            // Reset the value for next tests
+            _gSettings.Reset("test-int");
+        }
+
+        [Fact]
+        public void GetDefaultValue_ShouldReturnCurrentUserValue()
+        {
+            // Prepare
+            const int userValue = 42;
+            // Execute
+            _gSettings.SetInt("test-int", userValue);
+            var gvUserValue = _gSettings.GetUserValue("test-int");
+            var userFinalValue = gvUserValue.GetInt();
+            var gvDefaultValue = _gSettings.GetDefaultValue("test-int");
+            var defaultValue = gvDefaultValue.GetInt();
+            // Validate
+            Assert.NotEqual(userFinalValue, defaultValue);
+            Assert.Equal(50, defaultValue);
+            Assert.Equal(userValue, userFinalValue);
+            // Reset the value for next tests
+            _gSettings.Reset("test-int");
+        }
+
+        [Fact]
+        public void GetStringV_ShouldReturnArrayOfString()
+        {
+            // Prepare
+            // Execute
+            var pets = _gSettings.GetStringV("list-my-pets");
+            // Validate
+            Assert.Equal(5, pets.Count);
+            Assert.Equal("Captain", pets.First());
+            Assert.Equal("Brutal", pets.Last());
+        }
+
+        [Fact]
+        public void GetEnum_ShouldReturnEnumValues()
+        {
+            // Prepare
+            // Execute
+            var state = _gSettings.GetEnum("current-state");
+            // Validate
+            Assert.Equal(1, state);
+        }
+
+        [Fact]
+        public void SetEnum_ShouldUpdateEnumValues()
+        {
+            // Prepare
+            // Execute
+            var succeeded = _gSettings.SetEnum("current-state", 2);
+            var state = _gSettings.GetEnum("current-state");
+            // Validate
+            Assert.True(succeeded);
+            Assert.Equal(2, state);
+            // Reset the value for next tests
+            _gSettings.Reset("current-state");
+        }
+
+        [Fact]
+        public void GetFlags_ShouldReturnFlagsValues()
+        {
+            // Prepare
+            // Execute
+            var flags = _gSettings.GetFlags("test-flags");
+            // Validate
+            Assert.Equal((uint)6, flags);
+        }
+
+        [Fact]
+        public void SetFlags_ShouldUpdateFlagsValues()
+        {
+            // Prepare
+            // Execute
+            var succeeded = _gSettings.SetFlags("test-flags", 7);
+            var flags = _gSettings.GetFlags("test-flags");
+            // Validate
+            Assert.True(succeeded);
+            Assert.Equal((uint)7, flags);
+            // Reset the value for next tests
+            _gSettings.Reset("test-flags");
+        }
+
 
         //[Fact]
         //public void GetValue_ShouldReturnsTheObjectValue()

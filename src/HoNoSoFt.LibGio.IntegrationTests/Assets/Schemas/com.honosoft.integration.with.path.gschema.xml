@@ -88,7 +88,7 @@
     <child name="best-book" schema="com.honosoft.integration.with.path.book"/>
   </schema>
 
-  <schema path="%filepath%" id="com.honosoft.integration.with.path.book">
+  <schema path="%filepath%best-book/" id="com.honosoft.integration.with.path.book">
     <key name="title" type="s">
       <default>'Clean Code'</default>
       <summary>Define the book title</summary>

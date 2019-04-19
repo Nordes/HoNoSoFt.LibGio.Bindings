@@ -85,8 +85,9 @@ namespace HoNoSoFt.LibGio.IntegrationTests.Fixtures
 
         private void UpdateSchemaPaths()
         {
+            var officialInstallPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "schemas/");
             var gSchemaXml = File.ReadAllText(IntegrationSchemaFullPath);
-            gSchemaXml = gSchemaXml.Replace("%filepath%", SchemaPath);
+            gSchemaXml = gSchemaXml.Replace("%filepath%", officialInstallPath);
             File.WriteAllText(IntegrationSchemaFullPath, gSchemaXml);
         }
 

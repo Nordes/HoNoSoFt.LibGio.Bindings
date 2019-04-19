@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using HoNoSoFt.LibGio.Bindings.Utilities;
 
 namespace HoNoSoFt.LibGio.Bindings
@@ -27,7 +28,6 @@ namespace HoNoSoFt.LibGio.Bindings
         // Not implemented: g_settings_new_full 
 
         public static void Sync() => PInvokes.GSettings.Sync();
-
         public GVariant GetValue(string key) => new GVariant(PInvokes.GSettings.GetValue(GSettingsPtr, key));
         public bool SetValue(string key, GVariant value) => PInvokes.GSettings.SetValue(GSettingsPtr, key, value.GVariantPtr);
         public bool IsWritable(string key) => PInvokes.GSettings.IsWritable(GSettingsPtr, key);
@@ -77,17 +77,15 @@ namespace HoNoSoFt.LibGio.Bindings
         [Obsolete("Deprecated since Version 2.40, Use GSettingsSchemaKey.RangeCheck instead")]
         public bool RangeCheck(string key, GVariant value) => PInvokes.GSettings.RangeCheck(GSettingsPtr, key, value.GVariantPtr);
 
-        internal void Get(string key, string format, params object[] formatArgs)
-        {
-            throw new NotImplementedException("Not implemented.");
-            PInvokes.GSettings.Get(GSettingsPtr, key, format, formatArgs);
-        }
+        //internal void Get(string key, string format, params object[] formatArgs)
+        //{
+        //    PInvokes.GSettings.Get(GSettingsPtr, key, format, formatArgs);
+        //}
 
-        internal void Set(string key, string format, params object[] formatArgs)
-        {
-            throw new NotImplementedException("Not implemented.");
-            PInvokes.GSettings.Get(GSettingsPtr, key, format, formatArgs);
-        }
+        //internal void Set(string key, string format, params object[] formatArgs)
+        //{
+        //    PInvokes.GSettings.Get(GSettingsPtr, key, format, formatArgs);
+        //}
 
         public bool GetBoolean(string key) => PInvokes.GSettings.GetBoolean(GSettingsPtr, key);
         public bool SetBoolean(string key, bool value) => PInvokes.GSettings.SetBoolean(GSettingsPtr, key, value);
@@ -112,7 +110,13 @@ namespace HoNoSoFt.LibGio.Bindings
             return children;
         }
 
-        public bool SetStringV(string key, ICollection<string> value) => PInvokes.GSettings.SetStrv(GSettingsPtr, key, value.ToArray());
+        //public bool SetStringV(string key, ICollection<string> value)
+        //{
+        //    //return PInvokes.GSettings.SetStrv(GSettingsPtr, key, value.ToArray());
+        //    return PInvokes.GSettings.SetStrv(GSettingsPtr, key, null);
+        //    /// in case it goes wrong... : GSETTINGS_SCHEMA_DIR=~/schemas/ gsettings reset-recursively com.honosoft.integration.with.path
+        //}
+
         public int GetEnum(string key) => PInvokes.GSettings.GetEnum(GSettingsPtr, key);
         public bool SetEnum(string key, int value) => PInvokes.GSettings.SetEnum(GSettingsPtr, key, value);
         public uint GetFlags(string key) => PInvokes.GSettings.GetFlags(GSettingsPtr, key);

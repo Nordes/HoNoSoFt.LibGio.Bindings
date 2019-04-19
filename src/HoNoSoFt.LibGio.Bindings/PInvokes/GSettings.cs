@@ -95,7 +95,7 @@ namespace HoNoSoFt.LibGio.Bindings.PInvokes
         [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_get_strv")]
         public static extern IntPtr GetStrv(IntPtr settings, string key);
         [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_set_strv")]
-        public static extern bool SetStrv(IntPtr settings, string key, string[] values);
+        public static extern bool SetStrv(IntPtr settings, string key, string values);
         [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_get_enum")]
         public static extern int GetEnum(IntPtr settings, string key);
         [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_set_enum")]
