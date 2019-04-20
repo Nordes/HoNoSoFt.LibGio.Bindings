@@ -23,6 +23,10 @@ let showSchemas () =
 ## How to run the Integration Tests
 To avoid running the tests within Visual Studio, you can filter the tests to remove the Trait by adding the search condition to : `-Trait:"Integration"`.
 
+Except if you're on a MAC or Linux, the integration tests are going to fail. **Why?** Because, Glib is for the linux world.
+
+If you plan to run your test application in Windows 10, it's possible under the WSL (Windows Subsystem Linux). You will be required to install at least the Glib (GSettings). Once this is completed, you will be able to start also your dbus using a command such as `exec dbus-run-session -- bash`. Normally, if you have an X-Server (gnome for example), the dbus session should be already started.
+
 **Future:** Use some kind of attribute to skip those tests in the VS UI: https://github.com/AArnott/Xunit.SkippableFact/pull/7#issuecomment-393395780
 
 ## Integration tests
