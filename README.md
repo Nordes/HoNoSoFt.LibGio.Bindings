@@ -1,3 +1,7 @@
+![License MIT](https://img.shields.io/github/license/Nordes/HoNoSoFt.LibGio.Bindings.svg)
+[![Build status](https://ci.appveyor.com/api/projects/status/u73rthepxyjpqlho/branch/master?svg=true)](https://ci.appveyor.com/project/Nordes/honosoft-libgio-bindings/branch/master)
+[![NuGet](https://img.shields.io/nuget/v/HoNoSoFt.LibGio.Bindings.svg)](https://www.nuget.org/packages/HoNoSoFt.LibGio.Bindings/)
+
 # LibGio.Bindings
 Binding between `libgio` (gsettings, glib, ...) and the Dotnet world. The naming convention is really close to the C++ version, however, instead of working with pointers, everything have been moved into objects for abstraction purpose. Also, the library does not expose the C++ pointer directly.
 
