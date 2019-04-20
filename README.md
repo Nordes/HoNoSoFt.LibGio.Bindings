@@ -45,6 +45,7 @@ A very small app consuming the api. The current state is basically the beginning
 
 ## What is implemented
 (Last update : 2019-04-20)
+
 | What | Nb Func. | Total Impl. | Integration tests |
 | ---- | --------: | -----------: | -----------------: | 
 | GSettings | 54 | 74% | 67% |
