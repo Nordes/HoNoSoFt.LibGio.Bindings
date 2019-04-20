@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using HoNoSoFt.LibGio.Bindings.Utilities;
 
 namespace HoNoSoFt.LibGio.Bindings
 {
     // https://developer.gnome.org/glib/stable/glib-GVariantType.html#GVariantType
     public class GVariantType
     {
-        internal IntPtr GVariantTypePtr { get; private set; }
+        internal IntPtr GVariantTypePtr { get; }
 
         public GVariantType(string typeString)
         {
@@ -21,6 +22,13 @@ namespace HoNoSoFt.LibGio.Bindings
         public static bool StringIsValid(string typeString) => PInvokes.GVariantType.StringIsValid(typeString);
         public string TypePeekString() => Marshal.PtrToStringAnsi(PInvokes.GVariantType.TypePeekString(GVariantTypePtr));
         public int GetStringLength() => PInvokes.GVariantType.GetStringLength(GVariantTypePtr);
+
+        /// <summary>
+        /// Scan for the current type. E.g.: A String type is "s" and if you search "s" => true
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        public bool StringScan(string search) => PInvokes.GVariantType.StringScan(search, IntPtr.Zero, out var endPtr);
         public string DupString() => Marshal.PtrToStringAnsi(PInvokes.GVariantType.DupString(GVariantTypePtr));
         public bool IsDefinite() => PInvokes.GVariantType.IsDefinite(GVariantTypePtr);
         public bool IsContainer() => PInvokes.GVariantType.IsContainer(GVariantTypePtr);

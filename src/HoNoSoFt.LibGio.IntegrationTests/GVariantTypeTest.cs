@@ -46,5 +46,17 @@ namespace HoNoSoFt.LibGio.IntegrationTests
             // Verify
             Assert.True(gVariantTypeArrayInt.GVariantTypePtr != IntPtr.Zero);
         }
+
+        [Fact]
+        public void StringScan_ShouldReturnTrueIfFound()
+        {
+            // Prepare
+            var gVariant = _gSettings.GetValue("test-string");
+            var gvt = gVariant.GetVariantType();
+            // Execute
+            var found = gvt.StringScan("s");
+            // Validate
+            Assert.True(found);
+        }
     }
 }
