@@ -5,7 +5,7 @@ using Xunit;
 
 namespace HoNoSoFt.LibGio.IntegrationTests
 {
-    public class GStringTest
+    public class GStringTest : BaseTest
     {
         [Fact]
         public void Free_ShouldReturnStringWhenFreeSegmentIsFalse()

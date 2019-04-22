@@ -7,6 +7,8 @@ namespace HoNoSoFt.LibGio.IntegrationTests.Fixtures
 {
     /// <summary>
     /// Some documentation about fixture: https://xunit.github.io/docs/shared-context
+    ///
+    /// After everytest we should do : GSETTINGS_SCHEMA_DIR=~/schemas/ gsettings reset-recursively com.honosoft.integration.with.path
     /// </summary>
     public class GSchemaFixture : IDisposable
     {

@@ -9,7 +9,7 @@ namespace HoNoSoFt.LibGio.Bindings.PInvokes
         public static extern bool NameIsValid(string actionName);
 
         [DllImport("libgio-2.0.so.0", EntryPoint = "g_action_get_name")]
-        public static extern string GetName(IntPtr gActionPtr);
+        public static extern IntPtr GetName(IntPtr gActionPtr);
 
         //const GVariantType* g_action_get_parameter_type ()
         [DllImport("libgio-2.0.so.0", EntryPoint = "g_action_get_parameter_type")]
@@ -40,6 +40,6 @@ namespace HoNoSoFt.LibGio.Bindings.PInvokes
         public static extern bool ParseDetailedName(string detailedName, string[] actionName, IntPtr[] gVariantTargetValuePtr, IntPtr gErrorPtr);
 
         [DllImport("libgio-2.0.so.0", EntryPoint = "g_action_print_detailed_name")]
-        public static extern string PrintDetailedName(IntPtr gActionPtr, IntPtr gVariantTargetValuePtr);
+        public static extern IntPtr PrintDetailedName(IntPtr gActionPtr, IntPtr gVariantTargetValuePtr);
     }
 }

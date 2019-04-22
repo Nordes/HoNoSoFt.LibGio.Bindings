@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace HoNoSoFt.LibGio.Bindings
 {
@@ -13,54 +14,32 @@ namespace HoNoSoFt.LibGio.Bindings
         }
 
         public static bool NameIsValid(string actionName) => PInvokes.GAction.NameIsValid(actionName);
-        public string GetName() => PInvokes.GAction.GetName(_gAction);
+        public string GetName() => Marshal.PtrToStringAnsi(PInvokes.GAction.GetName(_gAction));
 
         public GVariantType GetParameterType()
         {
-            var gvariantTypePtr = PInvokes.GAction.GetParameterType(_gAction);
-
-            return new GVariantType(gvariantTypePtr);
+            var gVariantTypePtr = PInvokes.GAction.GetParameterType(_gAction);
+            return gVariantTypePtr == IntPtr.Zero ? null : new GVariantType(gVariantTypePtr);
         }
 
         public GVariantType GetStateType()
         {
-            var gvariantTypePtr = PInvokes.GAction.GetStateType(_gAction);
-
-            return new GVariantType(gvariantTypePtr);
+            var gVariantTypePtr =  PInvokes.GAction.GetStateType(_gAction);
+            return gVariantTypePtr == IntPtr.Zero ? null : new GVariantType(gVariantTypePtr);
         }
 
-        public object GetStateHint()
-        {
-            throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
-            var gvariantPtr = PInvokes.GAction.GetStateHint(_gAction);
-        }
-
+        public GVariant GetStateHint() => new GVariant(PInvokes.GAction.GetStateHint(_gAction));
         public bool GetEnabled() => PInvokes.GAction.GetEnabled(_gAction);
 
-        public object GetState()
+        public GVariant GetState()
         {
-            throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
-            var gvariantPtr = PInvokes.GAction.GetState(_gAction);
+            var gVariantPtr = PInvokes.GAction.GetState(_gAction);
+            return gVariantPtr == IntPtr.Zero ? null : new GVariant(gVariantPtr);
         }
 
-        public void ChangeState(GVariant gVariant)
-        {
-            throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
-            PInvokes.GAction.ChangeState(_gAction, gVariant.GVariantPtr);
-        }
-
-        public void Activate(GVariant gVariantParameter)
-        {
-            throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
-            PInvokes.GAction.Activate(_gAction, gVariantParameter.GVariantPtr);
-        }
-
-        // ParseDetailedName (will not work for now, too complex?)
-
-        public string PrintDetailedName(GVariant gVariant)
-        {
-            throw new NotImplementedException("GVariant is not implemented fully and this can't work yet.");
-            PInvokes.GAction.PrintDetailedName(_gAction, gVariant.GVariantPtr);
-        }
+        public void ChangeState(GVariant gVariant) => PInvokes.GAction.ChangeState(_gAction, gVariant.GVariantPtr);
+        public void Activate(GVariant gVariantParameter) => PInvokes.GAction.Activate(_gAction, gVariantParameter.GVariantPtr);
+        // ParseDetailedName (Can work, but return type will be a complex object)
+        public string PrintDetailedName(GVariant gVariant) => Marshal.PtrToStringAnsi(PInvokes.GAction.PrintDetailedName(_gAction, gVariant.GVariantPtr));
     }
 }

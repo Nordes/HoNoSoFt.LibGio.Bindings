@@ -6,7 +6,7 @@ namespace HoNoSoFt.LibGio.IntegrationTests
 {
     [Trait("Category", "Integration")]
     [Collection("GSchema collection")]
-    public class GVariantTest
+    public class GVariantTest : BaseTest
     {
         private readonly GSettings _gSettings;
 

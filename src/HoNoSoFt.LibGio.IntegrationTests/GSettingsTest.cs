@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using HoNoSoFt.LibGio.Bindings;
 using HoNoSoFt.LibGio.IntegrationTests.Assets.Models;
 using HoNoSoFt.LibGio.IntegrationTests.Fixtures;
@@ -10,17 +11,15 @@ namespace HoNoSoFt.LibGio.IntegrationTests
 {
     [Trait("Category", "Integration")]
     [Collection("GSchema collection")]
-    public class GSettingsTest
+    public class GSettingsTest : BaseTest
     {
         private readonly GSchemaFixture _schemaFix;
-        private readonly IntPtr _schema;
         private readonly GSettings _gSettings;
 
         public GSettingsTest(GSchemaFixture schemaFix)
         {
             _schemaFix = schemaFix;
             _gSettings = new GSettings(_schemaFix.SchemaName);
-            _schema = _gSettings.GSettingsPtr;
         }
 
         [Fact]
@@ -68,13 +67,12 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         public void SetBoolean_ShouldReturnTheBooleanValue()
         {
             // Prepare
-            var expectedValue = false;
             // Execute
-            var result = _gSettings.SetBoolean("my-flag-is-active", expectedValue);
+            var result = _gSettings.SetBoolean("my-flag-is-active", false);
             var resultUpdated = _gSettings.GetBoolean("my-flag-is-active");
             // Assert
             Assert.True(result);
-            Assert.Equal(expectedValue, resultUpdated);
+            Assert.False(resultUpdated);
             // Reset the value to it's original state.
             _gSettings.Reset("my-flag-is-active");
         }
@@ -85,7 +83,7 @@ namespace HoNoSoFt.LibGio.IntegrationTests
             // Execute
             var result = _gSettings.GetDouble("test-double");
             // Assert
-            Assert.Equal((double)3.1415999999999999, result);
+            Assert.Equal(3.1415999999999999, result);
         }
 
         [Fact]
@@ -219,13 +217,15 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         }
 
         [Fact]
-        public void ListKeys()
+        public void ListKeys_ShouldReturnsAllTheKeys()
         {
             // Prepare
             var expected = "list-my-pets, test-string, test-long, test-uint, test-flags, current-state, my-flag-is-active, " +
                            "test-int, test-uint64, list-prime-numbers, test-double";
             //Execute
+#pragma warning disable 618
             var result = _gSettings.ListKeys();
+#pragma warning restore 618
             // Validate
             Assert.Equal(expected, string.Join(", ", result));
         }
@@ -271,8 +271,9 @@ namespace HoNoSoFt.LibGio.IntegrationTests
             // Prepare
             // Execute
             var gs = _gSettings.GetChild(childName);
+#pragma warning disable 618
             var keys = gs.ListKeys();
-
+#pragma warning restore 618
             // Validate
             Assert.NotNull(gs);
             Assert.NotNull(keys);
@@ -326,6 +327,36 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         }
 
         [Fact]
+        public void SetStringV_ShouldSetNewArrayOfString()
+        {
+            // Prepare
+            var newValues = new List<string> { "Waldo", "Willy", "Wonka" };
+            // Execute
+            var successToChangeValue = _gSettings.SetStringV("list-my-pets", newValues);
+            var pets = _gSettings.GetStringV("list-my-pets");
+            // Assert
+            successToChangeValue.Should().Be(true, "Without being true, it means it was not able to update the schema");
+            pets.Should().BeEquivalentTo(newValues);
+            // Reset value
+            _gSettings.Reset("list-my-pets");
+        }
+
+        [Fact]
+        public void SetStringV_ShouldSetEmptyArrayOfStringWhenNull()
+        {
+            // Prepare
+            // Execute
+            var successToChangeValue = _gSettings.SetStringV("list-my-pets", null);
+            var pets = _gSettings.GetStringV("list-my-pets");
+            // Assert
+            successToChangeValue.Should().Be(true, "Without being true, it means it was not able to update the schema");
+            pets.Should().BeEquivalentTo(new List<string>());
+            // Reset value
+            _gSettings.Reset("list-my-pets");
+        }
+
+
+        [Fact]
         public void GetEnum_ShouldReturnEnumValues()
         {
             // Prepare
@@ -372,14 +403,5 @@ namespace HoNoSoFt.LibGio.IntegrationTests
             // Reset the value for next tests
             _gSettings.Reset("test-flags");
         }
-
-
-        //[Fact]
-        //public void GetValue_ShouldReturnsTheObjectValue()
-        //{
-        //    throw new NotImplementedException("Not fully implemented, see GSettings.GetValue");
-        //    var gVariantValue = Bindings.PInvokes.GSettings.GetValue(_schema, "list-prime-numbers");
-        //    Assert.NotEqual(IntPtr.Zero, gVariantValue);
-        //}
     }
 }

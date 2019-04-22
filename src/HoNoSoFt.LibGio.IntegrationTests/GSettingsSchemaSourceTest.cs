@@ -2,13 +2,11 @@
 using HoNoSoFt.LibGio.Bindings.Exceptions;
 using HoNoSoFt.LibGio.Bindings.GStructs;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace HoNoSoFt.LibGio.IntegrationTests
 {
-    public class GSettingsSchemaSourceTest
+    public class GSettingsSchemaSourceTest : BaseTest
     {
         [Fact]
         public void Ctor_ShouldThrowWhenDirectoryNotFound()

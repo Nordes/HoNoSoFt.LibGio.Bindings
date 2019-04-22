@@ -80,11 +80,11 @@ namespace HoNoSoFt.LibGio.Bindings.PInvokes
         [DllImport("libgio-2.0.so.0", EntryPoint = "g_variant_get_double")]
         public static extern double GetDouble(IntPtr gVariant);
         [DllImport("libgio-2.0.so.0", EntryPoint = "g_variant_get_string")]
-        public static extern string GetString(IntPtr gVariant, IntPtr size);
+        public static extern IntPtr GetString(IntPtr gVariant, IntPtr size);
 
         // Require to free "The return value must be freed using g_free()."
         [DllImport("libgio-2.0.so.0", EntryPoint = "g_variant_dup_string")]
-        public static extern string DupString(IntPtr gVariant, IntPtr size);
+        public static extern IntPtr DupString(IntPtr gVariant, IntPtr size);
         [DllImport("libgio-2.0.so.0", EntryPoint = "g_variant_get_variant")]
         public static extern IntPtr GetVariant(IntPtr gVariant);
 

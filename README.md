@@ -56,11 +56,11 @@ A very small app consuming the api. The current state is basically the beginning
 
 | What | Nb Func. | Total Impl. | Integration tests |
 | ---- | --------: | -----------: | -----------------: | 
-| GSettings | 54 | 74% | 67% |
+| GSettings | 54 | 76% | 69% |
 | GSettingsBackend | 11 | 0% | 0% |
-| GAction | 11 | 100% | 0% |
-| GVariantType | 29 | 100% | 14% |
-| GVariant | 121 | 49% | 28% |
+| GAction | 11 | 91% | 0% |
+| GVariantType | 29 | 100% | 28% |
+| GVariant | 121 | 48% | 28% |
 | GString | 32 |  6% | 0% |
 | GSettingsSchemaSource | 23 | 100% | 30% | 
 

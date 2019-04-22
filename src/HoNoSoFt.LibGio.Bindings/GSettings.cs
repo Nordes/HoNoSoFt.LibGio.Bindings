@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using HoNoSoFt.LibGio.Bindings.Utilities;
 
 namespace HoNoSoFt.LibGio.Bindings
@@ -110,12 +111,23 @@ namespace HoNoSoFt.LibGio.Bindings
             return children;
         }
 
-        //public bool SetStringV(string key, ICollection<string> value)
-        //{
-        //    //return PInvokes.GSettings.SetStrv(GSettingsPtr, key, value.ToArray());
-        //    return PInvokes.GSettings.SetStrv(GSettingsPtr, key, null);
-        //    /// in case it goes wrong... : GSETTINGS_SCHEMA_DIR=~/schemas/ gsettings reset-recursively com.honosoft.integration.with.path
-        //}
+
+        public bool SetStringV(string key, ICollection<string> value)
+        {
+            var stringVtoSet = new List<string>();
+
+            if (value != null)
+            {
+                stringVtoSet.AddRange(value.ToList());
+            }
+
+            // Solution for array of "something" that you need to pass to c/c++
+            // https://stackoverflow.com/questions/25137788/how-to-p-invoke-char-in-c-sharp
+            // add the "zero"/null terminated array value.
+            stringVtoSet.Add(null); 
+            
+            return PInvokes.GSettings.SetStrV(GSettingsPtr, key, stringVtoSet.ToArray());
+        }
 
         public int GetEnum(string key) => PInvokes.GSettings.GetEnum(GSettingsPtr, key);
         public bool SetEnum(string key, int value) => PInvokes.GSettings.SetEnum(GSettingsPtr, key, value);

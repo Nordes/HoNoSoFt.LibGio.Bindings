@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using HoNoSoFt.LibGio.Bindings.Utilities;
 
 namespace HoNoSoFt.LibGio.Bindings
 {

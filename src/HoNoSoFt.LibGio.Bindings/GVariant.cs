@@ -18,6 +18,7 @@ namespace HoNoSoFt.LibGio.Bindings
         public GVariant(byte value) => RefVariant(PInvokes.GVariant.NewByte(value));
         public GVariant(short value) => RefVariant(PInvokes.GVariant.NewInt16(value));
         public GVariant(int value) => RefVariant(PInvokes.GVariant.NewInt(value));
+        public GVariant(uint value) => RefVariant(PInvokes.GVariant.NewUInt(value));
         public GVariant(long value) => RefVariant(PInvokes.GVariant.NewInt64(value));
         public GVariant(ulong value) => RefVariant(PInvokes.GVariant.NewUInt64(value));
         public GVariant(double value) => RefVariant(PInvokes.GVariant.NewDouble(value));
@@ -68,6 +69,9 @@ namespace HoNoSoFt.LibGio.Bindings
         public bool IsNormalForm() => PInvokes.GVariant.IsNormalForm(GVariantPtr);
         public uint Hash() => PInvokes.GVariant.Hash(GVariantPtr);
         public bool Equal(GVariant equalsTo) => PInvokes.GVariant.Equal(GVariantPtr, equalsTo.GVariantPtr);
+        public int GetHandle() => PInvokes.GVariant.GetHandle(GVariantPtr);
+        public string GetString() => Marshal.PtrToStringAuto(PInvokes.GVariant.GetString(GVariantPtr, IntPtr.Zero));
+        public string DupString() => Marshal.PtrToStringAuto(PInvokes.GVariant.DupString(GVariantPtr, IntPtr.Zero));
 
         public string Print(bool typeAnnotate) => PInvokes.GVariant.Print(GVariantPtr, typeAnnotate);
         public string PrintString(string startText, bool typeAnnotate)
