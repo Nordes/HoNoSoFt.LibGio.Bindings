@@ -56,13 +56,13 @@ A very small app consuming the api. The current state is basically the beginning
 
 | What | Nb Func. | Total Impl. | Integration tests |
 | ---- | --------: | -----------: | -----------------: | 
-| GSettings | 54 | 76% | 69% |
-| GSettingsBackend | 11 | 0% | 0% |
-| GAction | 11 | 91% | 0% |
-| GVariantType | 29 | 100% | 28% |
-| GVariant | 121 | 48% | 28% |
-| GString | 32 |  6% | 0% |
-| GSettingsSchemaSource | 23 | 100% | 30% | 
+| [GSettings](https://developer.gnome.org/gio/stable/GSettings.html) | 54 | 76% | 69% |
+| [GSettingsBackend](https://developer.gnome.org/gio/stable/GSettingsBackend.html) | 11 | 0% | 0% |
+| [GAction](https://developer.gnome.org/gio/stable/GAction.html) | 11 | 91% | 0% |
+| [GVariantType](https://developer.gnome.org/glib/stable/glib-GVariantType.html) | 29 | 100% | 28% |
+| [GVariant](https://developer.gnome.org/glib/stable/glib-GVariant.html) | 121 | 48% | 28% |
+| [GString](https://developer.gnome.org/glib/stable/glib-Strings.html) | 32 |  6% | 0% |
+| [GSettingsSchemaSource](https://developer.gnome.org/gio/stable/gio-GSettingsSchema-GSettingsSchemaSource.html) | 23 | 100% | 30% | 
 
 Maybe coming also: DBus-Glib for communication within the bus.
 
