@@ -52,7 +52,7 @@ Basically a small application written in F#. It basically show a little the sche
 A very small app consuming the api. The current state is basically the beginning of a program. There's a project in order to make it more usable. That being said, F# or C#, the code is relatively similar in order to call the Library.
 
 ## What is implemented
-(Last update : 2019-04-20)
+(Last update : 2019-04-22)
 
 | What | Nb Func. | Total Impl. | Integration tests |
 | ---- | --------: | -----------: | -----------------: | 
