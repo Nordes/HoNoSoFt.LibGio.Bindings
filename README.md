@@ -34,7 +34,7 @@ If you plan to run your test application in Windows 10, it's possible under the 
 **Future:** Use some kind of attribute to skip those tests in the VS UI: https://github.com/AArnott/Xunit.SkippableFact/pull/7#issuecomment-393395780
 
 ## Integration tests
-From a linux console, ensure that you have `gsettings`, `glib-compile-schemas` and an active `dbus` session.
+From a linux console, ensure that you have `gsettings`, `glib-compile-schemas` and an active `dbus` session. In this case, we will keep the schema in our user home folder. For information, usually those file are located in `/usr/share/glib-2.0/schemas/`.
 ```sh
 # If DBus is not started (e.g.: WSL):
 # > exec dbus-run-session -- bash
@@ -81,3 +81,5 @@ Maybe coming also: DBus-Glib for communication within the bus.
 # License
 ![License MIT](https://img.shields.io/github/license/Nordes/HoNoSoFt.LibGio.Bindings.svg)
 
+## Note to myself
+- https://stackoverflow.com/a/39956929/80527 for exception handling? (E.g.: schema not existing stop the application completely)

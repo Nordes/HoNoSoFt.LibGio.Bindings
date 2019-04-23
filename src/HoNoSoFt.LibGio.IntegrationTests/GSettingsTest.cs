@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using HoNoSoFt.LibGio.Bindings;
+using HoNoSoFt.LibGio.Bindings.Exceptions;
 using HoNoSoFt.LibGio.IntegrationTests.Assets.Models;
 using HoNoSoFt.LibGio.IntegrationTests.Fixtures;
 using Xunit;
@@ -28,6 +29,35 @@ namespace HoNoSoFt.LibGio.IntegrationTests
             var settings = new GSettings(_schemaFix.SchemaName);
             Assert.NotEqual(IntPtr.Zero, settings.GSettingsPtr);
         }
+
+        [Fact]
+        public void New_ShouldThrowGSettingsSchemaExceptionWhenSchemaNotExist()
+        {
+            // Prepare
+            var notExistingSchema = "UnknownSchema";
+            // Execute
+            var exResult = Assert.Throws<GSettingsSchemaException>(() => new GSettings(notExistingSchema));
+            // Assert
+            exResult.Message.Should().Be($"Settings Schema not found or not installed: {notExistingSchema}");
+        }
+
+        //[Fact]
+        //public void NewWithPath_ShouldReturnsSchemaPointer()
+        //{
+        //    var settings = new GSettings("org.gnome.system.proxy", "/usr/share/glib-2.0/schemas/system/proxy/");
+        //    Assert.NotEqual(IntPtr.Zero, settings.GSettingsPtr);
+        //}
+
+        //[Fact]
+        //public void NewWithPath_ShouldThrowGSettingsSchemaExceptionWhenSchemaNotExist()
+        //{
+        //    // Prepare
+        //    var notExistingSchema = "UnknownSchema";
+        //    // Execute
+        //    var exResult = Assert.Throws<GSettingsSchemaException>(() => new GSettings(notExistingSchema, "/randomPath"));
+        //    // Assert
+        //    exResult.Message.Should().Be($"Settings Schema not found or not installed: {notExistingSchema}");
+        //}
 
         [Fact]
         public void Sync_ShouldCommitAll()

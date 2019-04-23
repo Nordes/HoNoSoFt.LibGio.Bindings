@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using HoNoSoFt.LibGio.Bindings.Exceptions;
 using HoNoSoFt.LibGio.Bindings.Utilities;
 
 namespace HoNoSoFt.LibGio.Bindings
@@ -22,8 +23,30 @@ namespace HoNoSoFt.LibGio.Bindings
         internal IntPtr GSettingsPtr { get; set; }
 
         internal GSettings(IntPtr rawGSettings) => GSettingsPtr = rawGSettings;
-        public GSettings(string schema) => GSettingsPtr = PInvokes.GSettings.New(schema);
-        public GSettings(string schema, string path) => GSettingsPtr = PInvokes.GSettings.New(schema, path);
+
+        public GSettings(string schema)
+        {
+            var gss = new GSettingsSchemaSource();
+            var found = gss.Lookup(schema, true);
+            if (found == null)
+            {
+                throw new GSettingsSchemaException($"Settings Schema not found or not installed: {schema}");
+            }
+
+            GSettingsPtr = PInvokes.GSettings.New(schema);
+        }
+
+        public GSettings(string schema, string path) {
+            var gss = new GSettingsSchemaSource(path, null, true);
+            var found = gss.Lookup(schema, true);
+            if (found == null)
+            {
+                throw new GSettingsSchemaException($"Settings Schema not found or not installed: {schema}");
+            }
+
+            GSettingsPtr = PInvokes.GSettings.New(schema, path);
+        }
+
         // Not implemented: g_settings_new_with_backend
         // Not implemented: g_settings_new_with_backend_and_path
         // Not implemented: g_settings_new_full 
