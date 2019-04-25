@@ -90,7 +90,7 @@ namespace HoNoSoFt.LibGio.Bindings.PInvokes
         [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_set_double")]
         public static extern bool SetDouble(IntPtr settings, string key, double value);
         [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_get_string")]
-        public static extern string GetString(IntPtr settings, string key);
+        public static extern IntPtr GetString(IntPtr settings, string key);
         [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_set_string")]
         public static extern bool SetString(IntPtr settings, string key, string value);
         [DllImport("libgio-2.0.so.0", EntryPoint = "g_settings_get_strv")]

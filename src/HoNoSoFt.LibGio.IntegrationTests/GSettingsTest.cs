@@ -75,22 +75,63 @@ namespace HoNoSoFt.LibGio.IntegrationTests
             // Execute
             var result = _gSettings.GetInt("test-int");
             // Assert
-            Assert.Equal(50, result);
+            result.Should().Be(50);
+        }
+
+        [Fact]
+        public void GetInt_ShouldReturnDefaultWhenTypeMissMatch()
+        {
+            // Execute
+            var result = _gSettings.GetInt("test-string");
+            // Assert
+            result.Should().Be(0);
+        }
+
+        [Fact]
+        public void GetInt_ShouldThrowWhenNotFound()
+        {
+            // Prepare
+            var keyName = "my-int-does-not-exists";
+            // Execute
+            var ex = Assert.Throws<GSettingsSchemaKeyException>(() => _gSettings.GetInt(keyName));
+            // Assert
+            ex.Message.Should().Be($"Key '{keyName}' not found.");
         }
 
         [Fact]
         public void SetInt_ShouldSetNewValue()
         {
             // Prepare
-            var expectedValue = -22;
+            const int expectedValue = -22;
             // Execute
             var result = _gSettings.SetInt("test-int", expectedValue);
             var resultUpdated = _gSettings.GetInt("test-int");
             // Assert
-            Assert.True(result);
-            Assert.Equal(expectedValue, resultUpdated);
+            result.Should().BeTrue();
+            resultUpdated.Should().Be(expectedValue);
+
             // Reset the value to it's original state.
             _gSettings.Reset("test-int");
+        }
+
+        [Fact]
+        public void SetInt_ShouldReturnFalseWhenTypeMissMatch()
+        {
+            // Execute
+            var result = _gSettings.SetInt("test-string", 42);
+            // Assert
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void SetInt_ShouldThrowWhenNotFound()
+        {
+            // Prepare
+            var keyName = "my-int-does-not-exists";
+            // Execute
+            var ex = Assert.Throws<GSettingsSchemaKeyException>(() => _gSettings.SetInt(keyName, 42));
+            // Assert
+            ex.Message.Should().Be($"Key '{keyName}' not found.");
         }
 
         [Fact]
@@ -117,6 +158,26 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         }
 
         [Fact]
+        public void GetDouble_ShouldReturnDefaultWhenTypeMissMatch()
+        {
+            // Execute
+            var result = _gSettings.GetDouble("test-string");
+            // Assert
+            result.Should().Be(0);
+        }
+
+        [Fact]
+        public void GetDouble_ShouldThrowWhenNotFound()
+        {
+            // Prepare
+            var keyName = "my-double-does-not-exists";
+            // Execute
+            var ex = Assert.Throws<GSettingsSchemaKeyException>(() => _gSettings.GetDouble(keyName));
+            // Assert
+            ex.Message.Should().Be($"Key '{keyName}' not found.");
+        }
+
+        [Fact]
         public void SetDouble_ShouldSetNewValue()
         {
             // Prepare
@@ -132,12 +193,52 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         }
 
         [Fact]
+        public void SetDouble_ShouldReturnFalseWhenTypeMissMatch()
+        {
+            // Execute
+            var result = _gSettings.SetDouble("test-string", 42);
+            // Assert
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void SetDouble_ShouldThrowWhenNotFound()
+        {
+            // Prepare
+            var keyName = "my-double-does-not-exists";
+            // Execute
+            var ex = Assert.Throws<GSettingsSchemaKeyException>(() => _gSettings.SetDouble(keyName, 42));
+            // Assert
+            ex.Message.Should().Be($"Key '{keyName}' not found.");
+        }
+
+        [Fact]
         public void GetString_ShouldReturnTheStringValue()
         {
             // Execute
             var result = _gSettings.GetString("test-string");
             // Assert
             Assert.Equal("Captain Morgan", result);
+        }
+
+        [Fact]
+        public void GetString_ShouldReturnDefaultWhenTypeMissMatch()
+        {
+            // Execute
+            var result = _gSettings.GetString("test-int");
+            // Assert
+            result.Should().Be("");
+        }
+
+        [Fact]
+        public void GetString_ShouldThrowWhenNotFound()
+        {
+            // Prepare
+            var keyName = "my-string-does-not-exists";
+            // Execute
+            var ex = Assert.Throws<GSettingsSchemaKeyException>(() => _gSettings.GetString(keyName));
+            // Assert
+            ex.Message.Should().Be($"Key '{keyName}' not found.");
         }
 
         [Fact]
@@ -156,6 +257,26 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         }
 
         [Fact]
+        public void SetString_ShouldReturnFalseWhenTypeMissMatch()
+        {
+            // Execute
+            var result = _gSettings.SetString("test-int", "42");
+            // Assert
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void SetString_ShouldThrowWhenNotFound()
+        {
+            // Prepare
+            var keyName = "my-string-does-not-exists";
+            // Execute
+            var ex = Assert.Throws<GSettingsSchemaKeyException>(() => _gSettings.SetString(keyName, "42"));
+            // Assert
+            ex.Message.Should().Be($"Key '{keyName}' not found.");
+        }
+
+        [Fact]
         public void SetUInt_ShouldSetNewValue()
         {
             // Prepare
@@ -171,6 +292,26 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         }
 
         [Fact]
+        public void SetUInt_ShouldReturnFalseWhenTypeMissMatch()
+        {
+            // Execute
+            var result = _gSettings.SetUInt("test-string", 42);
+            // Assert
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void SetUInt_ShouldThrowWhenNotFound()
+        {
+            // Prepare
+            var keyName = "my-uint-does-not-exists";
+            // Execute
+            var ex = Assert.Throws<GSettingsSchemaKeyException>(() => _gSettings.SetUInt(keyName, 42));
+            // Assert
+            ex.Message.Should().Be($"Key '{keyName}' not found.");
+        }
+
+        [Fact]
         public void SetInt64_ShouldSetNewValue()
         {
             // Prepare
@@ -183,6 +324,26 @@ namespace HoNoSoFt.LibGio.IntegrationTests
             Assert.Equal(expectedValue, resultUpdated);
             // Reset the value to it's original state.
             _gSettings.Reset("test-long");
+        }
+
+        [Fact]
+        public void SetUInt64_ShouldReturnFalseWhenTypeMissMatch()
+        {
+            // Execute
+            var result = _gSettings.SetUInt64("test-string", 42);
+            // Assert
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void SetUInt64_ShouldThrowWhenNotFound()
+        {
+            // Prepare
+            var keyName = "my-uint64-does-not-exists";
+            // Execute
+            var ex = Assert.Throws<GSettingsSchemaKeyException>(() => _gSettings.SetUInt64(keyName, 42));
+            // Assert
+            ex.Message.Should().Be($"Key '{keyName}' not found.");
         }
 
         [Fact]
@@ -209,6 +370,27 @@ namespace HoNoSoFt.LibGio.IntegrationTests
             Assert.Equal(long.MaxValue, result);
         }
 
+
+        [Fact]
+        public void GetInt64_ShouldReturnDefaultWhenTypeMissMatch()
+        {
+            // Execute
+            var result = _gSettings.GetInt64("test-string");
+            // Assert
+            result.Should().Be(0);
+        }
+
+        [Fact]
+        public void GetInt64_ShouldThrowWhenNotFound()
+        {
+            // Prepare
+            var keyName = "my-int64-does-not-exists";
+            // Execute
+            var ex = Assert.Throws<GSettingsSchemaKeyException>(() => _gSettings.GetInt64(keyName));
+            // Assert
+            ex.Message.Should().Be($"Key '{keyName}' not found.");
+        }
+
         [Fact]
         public void GetUInt_ShouldReturnTheIntValue()
         {
@@ -216,6 +398,26 @@ namespace HoNoSoFt.LibGio.IntegrationTests
             var result = _gSettings.GetUInt("test-uint");
             // Assert
             Assert.Equal(uint.MaxValue, result);
+        }
+
+        [Fact]
+        public void GetUInt_ShouldReturnDefaultWhenTypeMissMatch()
+        {
+            // Execute
+            var result = _gSettings.GetUInt("test-string");
+            // Assert
+            result.Should().Be(0);
+        }
+
+        [Fact]
+        public void GetUInt_ShouldThrowWhenNotFound()
+        {
+            // Prepare
+            var keyName = "my-uint-does-not-exists";
+            // Execute
+            var ex = Assert.Throws<GSettingsSchemaKeyException>(() => _gSettings.GetUInt(keyName));
+            // Assert
+            ex.Message.Should().Be($"Key '{keyName}' not found.");
         }
 
         [Fact]
@@ -228,12 +430,52 @@ namespace HoNoSoFt.LibGio.IntegrationTests
         }
 
         [Fact]
+        public void GetUInt64_ShouldReturnDefaultWhenTypeMissMatch()
+        {
+            // Execute
+            var result = _gSettings.GetUInt64("test-string");
+            // Assert
+            result.Should().Be(0);
+        }
+
+        [Fact]
+        public void GetUInt64_ShouldThrowWhenNotFound()
+        {
+            // Prepare
+            var keyName = "my-uint64-does-not-exists";
+            // Execute
+            var ex = Assert.Throws<GSettingsSchemaKeyException>(() => _gSettings.GetUInt64(keyName));
+            // Assert
+            ex.Message.Should().Be($"Key '{keyName}' not found.");
+        }
+
+        [Fact]
         public void GetBoolean_ShouldReturnTheBooleanValue()
         {
             // Execute
             var result = _gSettings.GetBoolean("my-flag-is-active");
             // Assert
-            Assert.True(result);
+            result.Should().BeTrue();
+        }
+
+        [Fact]
+        public void GetBoolean_ShouldReturnFalseWhenWrongType()
+        {
+            // Execute
+            var result = _gSettings.GetBoolean("test-int");
+            // Assert
+            result.Should().BeFalse();
+        }
+
+        [Fact]
+        public void GetBoolean_ShouldThrowWhenNotFound()
+        {
+            // Prepare
+            var keyName = "my-flag-does-not-exists";
+            // Execute
+            var ex = Assert.Throws<GSettingsSchemaKeyException>(() => _gSettings.GetBoolean(keyName));
+            // Assert
+            ex.Message.Should().Be($"Key '{keyName}' not found.");
         }
 
         [Fact]
